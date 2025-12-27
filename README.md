@@ -22,6 +22,8 @@ The result is a system in which:
 - replay does not require re-execution,
 - and execution outcomes cannot retroactively legitimize decisions.
 
+This work builds on the execution model defined in https://github.com/lukaspfisterch/execution-without-normativity
+
 ---
 
 ## Conceptual core
