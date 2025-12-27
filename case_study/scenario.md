@@ -32,3 +32,7 @@ V records the INTENT and DECISION events in order. Given the same I_L and fixed 
 ## Limitations of the Case Study
 
 The scenario is illustrative and does not validate policy quality. It does not address side channels, performance, or external system effects. It only demonstrates explicit separation of normativity from observation.
+
+## Expanded Version
+
+For a full, example-heavy version of this scenario, see [scenario_expanded.md](./scenario_expanded.md).
