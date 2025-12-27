@@ -54,43 +54,43 @@ This repository is organized **by claims**, not by implementation.
 ### Assumptions
 Define the scope and threat model under which the claims hold.
 
-- `assumptions/scope.md`
-- `assumptions/threat_model.md`
+- [`assumptions/scope.md`](assumptions/scope.md)
+- [`assumptions/threat_model.md`](assumptions/threat_model.md)
 
 ### Claims
 Each claim is stated independently and precisely.
 
-- `claims/01_claim_1.md` - Deterministic Governance  
-- `claims/02_claim_2.md` - G/L Invariance  
-- `claims/03_claim_3.md` - Replay Equivalence  
-- `claims/04_claim_4.md` - Observational Non-Interference  
+- [`claims/01_claim_1.md`](claims/01_claim_1.md) - Deterministic Governance  
+- [`claims/02_claim_2.md`](claims/02_claim_2.md) - G/L Invariance  
+- [`claims/03_claim_3.md`](claims/03_claim_3.md) - Replay Equivalence  
+- [`claims/04_claim_4.md`](claims/04_claim_4.md) - Observational Non-Interference  
 
 ### Proofs
 Each claim has a corresponding proof file.
 The main proof files contain the **canonical argument**.
 Expanded lemma-based proofs are linked from within those files for reviewers.
 
-- `proofs/01_deterministic_governance.md`
-- `proofs/02_gl_invariance.md`
-- `proofs/03_replay_equivalence.md`
-- `proofs/04_observational_noninterference.md`
+- [`proofs/01_deterministic_governance.md`](proofs/01_deterministic_governance.md)
+- [`proofs/02_gl_invariance.md`](proofs/02_gl_invariance.md)
+- [`proofs/03_replay_equivalence.md`](proofs/03_replay_equivalence.md)
+- [`proofs/04_observational_noninterference.md`](proofs/04_observational_noninterference.md)
 
 ### Case study
 A concrete scenario illustrating the model, not used as proof.
 
-- `case_study/scenario.md`
-- `case_study/traces.md`
+- [`case_study/scenario.md`](case_study/scenario.md)
+- [`case_study/traces.md`](case_study/traces.md)
 
 ### Paper draft
 The LaTeX source assembling the formal model, axioms, claims, proofs, and related work.
 
-- `paper/main.tex`
-- `paper/refs.bib`
+- [`paper/main.tex`](paper/main.tex)
+- [`paper/refs.bib`](paper/refs.bib)
 
 ### Related work
 Mapping DBL against existing approaches.
 
-- `related_work/mapping.md`
+- [`related_work/mapping.md`](related_work/mapping.md)
 
 ---
 
