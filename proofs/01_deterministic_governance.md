@@ -2,7 +2,7 @@
 
 ## Theorem
 
-For fixed authoritative inputs and fixed policy configuration, the normative DECISION sequence written to V is deterministic and unaffected by non-deterministic execution.
+For fixed authoritative inputs and fixed boundary configuration and policy versioning, the normative DECISION sequence written to V is deterministic and unaffected by non-deterministic execution.
 
 ## Assumptions Used
 
@@ -14,7 +14,7 @@ For fixed authoritative inputs and fixed policy configuration, the normative DEC
 
 ## Proof Sketch
 
-By A3, governance consumes only I_L and excludes observational data. By A4, for fixed I_L and fixed policy configuration, governance deterministically produces DECISION events. By A5, these DECISION events are written before any execution occurs. By A2, normative effects are represented only by those DECISION events. By A1, the resulting sequence in V is immutable and ordered. Therefore, non-deterministic execution cannot alter the normative DECISION sequence. The normative outcome is deterministic under the stated assumptions.
+By A3, governance consumes only I_L and excludes observational data. By A4, for fixed I_L and fixed boundary configuration and policy versioning, governance deterministically produces the same ordered sequence of DECISION events. By A5, these DECISION events are written before any execution occurs. By A2, normative effects are represented only by those DECISION events. By A1, the resulting sequence in V is immutable and ordered. Therefore, non-deterministic execution cannot alter the normative DECISION sequence. The normative outcome is deterministic under the stated assumptions.
 
 ## Failure Modes
 
@@ -29,3 +29,7 @@ By A3, governance consumes only I_L and excludes observational data. By A4, for 
 - No claim about determinism of execution outputs.
 - No claim about policy correctness or optimality.
 - No claim about performance, latency, or availability.
+
+## Extended Proof
+
+A fully expanded, lemma-based proof is provided for reviewer inspection and formal verification, including explicit constructions of I_L, purity of G, and immutability of V. See: [proof_01_deterministic_governance_lemmas.md](./proof_01_deterministic_governance_lemmas.md)

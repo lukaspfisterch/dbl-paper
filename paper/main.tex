@@ -21,11 +21,23 @@
 \maketitle
 
 \begin{abstract}
-We present Deterministic Boundary Layers (DBL), an architectural model for governing the execution of non-deterministic systems (e.g., large language models). DBL enforces a strict separation between governance and execution by requiring all normative effects to appear only as explicit DECISION events in an append-only event stream. Governance operates solely on an authoritative input set admitted by explicit boundaries; execution outputs and other observations are explicitly non-normative.
+We introduce Deterministic Boundary Layers (DBL), a minimal architectural model
+for governing non-deterministic systems with deterministic, auditable outcomes.
+DBL separates normativity from execution by construction: all normative effects
+are expressed exclusively as explicit DECISION events recorded in an append-only
+event stream, while execution outputs are treated as observational and non-normative.
 
-We formalize the model with a small axiom set and derive four properties: deterministic governance under non-deterministic execution, invariance of the governance-boundary separation, replay equivalence of normative state, and observational non-interference. Proof sketches are provided under stated assumptions.
+Governance decisions are deterministic functions of authoritative inputs admitted
+by a boundary layer, independent of execution behavior, timing, or infrastructure.
+This separation yields three core guarantees: deterministic governance under
+non-deterministic execution, invariance of governance with respect to boundary
+filtering, and replay equivalence of normative state without re-execution.
 
-A case study illustrates how DBL prevents implicit normative drift under adversarial inputs by forcing governance decisions to be recorded before execution. The result is replayable, auditable decision traces without constraining execution outcomes. DBL is positioned as an architectural foundation for accountability and verifiable decision traces, not as a policy framework or learning-based safety mechanism.
+We formalize the model, state minimal axioms, and prove four claims establishing
+determinism, observational non-interference, and replayability. DBL is not a policy
+framework or learning method, but an architectural pattern for accountable AI
+governance, auditability, and compliance in systems where execution cannot be made
+deterministic.
 \end{abstract}
 
 \section{Introduction}
@@ -54,11 +66,10 @@ Observational data, including execution outputs and other runtime artifacts, is 
 \paragraph{Paper Organization.}
 The paper introduces the architectural model and its axioms, states the four claims, provides proof sketches under fixed assumptions, and presents a single case study, followed by a related work mapping.
 
-\section{Model and Axioms}
-Placeholder. Define $\Delta$, $V$, $t$, $G$, and $L$ and state the axioms.
+\input{sections/formal_definitions}
+\input{sections/model_and_axioms}
 
-\section{Claims}
-Placeholder. Present Claims 1--4 and their statements.
+\input{sections/claims}
 
 \section{Proof Sketches}
 Placeholder. Provide proof sketches under assumptions A1--A5.

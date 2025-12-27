@@ -14,10 +14,11 @@ In other words: **Observations can explain executions but cannot legitimize deci
 
 ## Assumptions Used
 
+- **A1** (Append-only V): V is append-only and events are immutable.
+- **A2** (DECISION primacy): All normative effects are represented only by explicit DECISION events in V.
 - **A3** (Authoritative inputs): G consumes only $I_L$; observational data is excluded.
 - **A4** (Deterministic governance): G deterministically produces DECISION for fixed $I_L$.
 - **A5** (Pre-execution decision): DECISION events written before execution.
-- **A6** (Pre-ontological boundaries): L operates before INTENT creation; may reject without events.
 
 ---
 
@@ -38,16 +39,14 @@ From these, observational non-interference follows.
 
 **Statement:** By construction, G has no access to observational data $O_{obs}$.
 
-**Formal:** $O_{obs} \notin \text{dom}(G)$
+**Formal:** $G$ is defined only over $(I_L, p_v)$ and has no inputs or channels to observe $O_{obs}$.
 
 **Proof:**
 
-G is defined (from formal definitions) as:
+G is defined as:
 $$G: (I_L, p_v) \to \text{DECISION}$$
 
-By **A3** (Authoritative inputs): G consumes only $I_L$.
-
-$\text{dom}(G) = I_L$ (the domain of G is exactly $I_L$).
+By **A3** (Authoritative inputs), G consumes only $I_L$ and does not admit $O_{obs}$ as input.
 
 $O_{obs}$ is defined as:
 $$O_{obs} = \{\text{traces, outputs, timing, errors, metrics, runtime artifacts}\}$$
@@ -102,7 +101,9 @@ Therefore: $I_L \cap O_{obs} = \emptyset$
 
 **Proof:**
 
-This is Lemma 2.2 from Proof 2 (G/L Invariance).
+This follows from Claim 2 (G/L Invariance): L prevents observational data from entering $I_L$ under fixed boundary configuration $C$.
+
+Implementation evidence (non-normative):
 
 By construction of L (from GL_SEPARATION contract):
 ```
@@ -302,6 +303,8 @@ Since:
 - G consumes only $I_L$ (Lemma 4.1)
 - $I_L \cap O_{obs} = \emptyset$ (Lemma 4.2)
 - $O_{obs}$ is produced after DECISION (Lemma 4.3)
+
+Since $O_{obs}$ is neither admitted into $I_L$ nor available before DECISION, there exists no causal or dataflow path from $O_{obs}$ to $G$ under the model.
 
 Therefore:
 $$G(I_L, O_{obs}) = G(I_L)$$

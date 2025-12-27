@@ -2,12 +2,13 @@
 
 ## Theorem
 
-A replay of V from the same initial state yields the same sequence of normative states and DECISION events as the original execution.
+A replay of V starting from the same initial state S0 yields the same sequence of normative states and DECISION events as the original execution.
 
 ## Assumptions Used
 
 - A1 (Append-only V)
 - A2 (DECISION primacy)
+- A3 (Authoritative inputs)
 - A4 (Deterministic governance)
 - A5 (Pre-execution decision)
 
@@ -27,3 +28,7 @@ By A1, V is append-only and immutable, so the replay uses the same ordered event
 - No claim about replay of execution outputs.
 - No claim about reproducing external side effects.
 - No claim about completeness of observations.
+
+## Extended Proof
+
+A fully expanded, lemma-based proof is provided for reviewer inspection and formal verification. See: [proof_03_replay_equivalence_lemmas.md](./proof_03_replay_equivalence_lemmas.md)

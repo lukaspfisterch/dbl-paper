@@ -17,7 +17,7 @@ Formally:
 $$V = \langle e_0, e_1, e_2, \ldots \rangle$$
 where $\forall i < j: t(e_i) < t(e_j)$.
 
-The index $t(e)$ establishes logical time. Physical timestamps are observational metadata.
+The index $t(e)$ establishes logical time derived from sequence order, not wall-clock time. Physical timestamps are observational metadata.
 
 \subsubsection{Event Kinds}
 
@@ -257,7 +257,7 @@ Governance (G) and Boundaries (L) operate on distinct domains with distinct resp
   \item L operates pre-ontologically (before V construction)
   \item G operates normatively (produces DECISION events in V)
 \end{itemize}
-This separation is invariant: L cannot make normative decisions, G cannot bypass boundaries.
+This separation is invariant: L cannot make normative decisions, G cannot bypass boundaries. They share no normative authority.
 \end{property}
 
 \begin{property}[Normative Minimalism]
@@ -270,7 +270,7 @@ This minimalism enables clear accountability: to audit what was decided, read $V
 \end{property}
 
 \begin{property}[Feed-Forward Consistency]
-DBL enforces feed-forward flow: inputs → decisions → execution. Feedback loops are prohibited:
+DBL enforces feed-forward flow: inputs -> decisions -> execution. Feedback loops are prohibited:
 \begin{itemize}
   \item L reads raw inputs, not execution outputs
   \item G reads $I_L$, not $O_{obs}$
@@ -341,7 +341,7 @@ The DBL model consists of:
   \item \textbf{Core elements}: $V$, $\Delta$, $G$, $L$, $I_L$, $O_{obs}$
   \item \textbf{Separation invariant}: G and L have distinct domains and responsibilities
   \item \textbf{Normative minimalism}: Only DECISION events are normative
-  \item \textbf{Feed-forward flow}: Inputs → Decisions → Execution (no feedback)
+  \item \textbf{Feed-forward flow}: Inputs -> Decisions -> Execution (no feedback)
 \end{itemize}
 
 From this minimal model, the four claims (Deterministic Governance, G/L Invariance, Replay Equivalence, Observational Non-Interference) follow formally.

@@ -37,7 +37,7 @@ From these, replay equivalence follows.
 
 **Statement:** All normative state is derivable exclusively from V. No hidden normative state exists.
 
-**Formal:** $\forall S_{norm}: S_{norm} = f(V)$ for some projection function $f$.
+**Formal:** $\forall V, S_0: S_{norm} = \mathrm{project\_state}(V, S_0)$.
 
 **Proof:**
 

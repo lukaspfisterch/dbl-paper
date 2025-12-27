@@ -6,8 +6,8 @@ The model defines a deterministic governance layer over non-deterministic execut
 \paragraph{Core Elements.}
 \textbf{Δ (Delta).} Δ denotes an atomic event or action. It is the minimal unit of change represented in the model. Δ may be normative or observational depending on its event type.  
 \textbf{V.} V is an append-only event stream composed of ordered Δ events. V is authoritative for normativity within the model.  
-\textbf{t.} t denotes logical order derived from V. It is defined by the sequence of events in V rather than by wall-clock time.  
-\textbf{G.} G is the governance function that produces explicit DECISION events. G operates only on authoritative inputs admitted by L.  
+\textbf{t.} t denotes logical order derived from V. It is defined by the sequence of events in V rather than by wall-clock time. We treat $t(e)$ as logical time derived from sequence order, not wall-clock time.  
+\textbf{G.} G is the governance function that produces explicit DECISION events. G operates only on authoritative inputs admitted by L and a fixed policy version $p_v$.  
 \textbf{L.} L is the boundary function that admits authoritative inputs. L defines what is eligible to influence governance decisions.
 
 \paragraph{Normativity and Observation.}
@@ -23,4 +23,7 @@ Normative effects determine whether actions are allowed or denied. In this model
 \end{itemize}
 
 \paragraph{Interpretation Notes.}
-If any axiom is violated, the model’s guarantees do not apply. The axioms are intentionally restrictive and define the scope of the formal claims.
+If any axiom is violated, the model's guarantees do not apply. The axioms are intentionally restrictive and define the scope of the formal claims.
+
+\paragraph{Extended Version.}
+A longer version of this section is provided for reviewers and formal verification in \texttt{sections/model_and_axioms_expanded.tex}.

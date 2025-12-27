@@ -2,13 +2,14 @@
 
 ## Theorem
 
-Observational data cannot affect normative decisions as long as governance consumes only I_L and normativity is represented only by DECISION events in V.
+Observational data cannot affect normative decisions when DECISION is produced before execution and governance consumes only I_L, with normativity represented only by DECISION events in V.
 
 ## Assumptions Used
 
 - A2 (DECISION primacy)
 - A3 (Authoritative inputs)
 - A4 (Deterministic governance)
+- A5 (Pre-execution decision)
 
 ## Proof Sketch
 
@@ -25,3 +26,7 @@ By A3, governance consumes only I_L and excludes observational data. By A4, gove
 - No claim that observations are useless.
 - No claim about policy optimality or fairness.
 - No claim about side-channel leakage outside the model.
+
+## Extended Proof
+
+A fully expanded, lemma-based proof is provided for reviewer inspection and formal verification. See: [proof_04_observational_noninterference_lemmas.md](./proof_04_observational_noninterference_lemmas.md)
