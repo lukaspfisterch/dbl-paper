@@ -1,0 +1,78 @@
+\documentclass[11pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\geometry{margin=1in}
+\hypersetup{colorlinks=true, linkcolor=black, urlcolor=black, citecolor=black}
+
+\title{Deterministic Boundary Layers: Governing Non-Deterministic Execution}
+\author{Author Name}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+We present Deterministic Boundary Layers (DBL), an architectural model for governing the execution of non-deterministic systems (e.g., large language models). DBL enforces a strict separation between governance and execution by requiring all normative effects to appear only as explicit DECISION events in an append-only event stream. Governance operates solely on an authoritative input set admitted by explicit boundaries; execution outputs and other observations are explicitly non-normative.
+
+We formalize the model with a small axiom set and derive four properties: deterministic governance under non-deterministic execution, invariance of the governance-boundary separation, replay equivalence of normative state, and observational non-interference. Proof sketches are provided under stated assumptions.
+
+A case study illustrates how DBL prevents implicit normative drift under adversarial inputs by forcing governance decisions to be recorded before execution. The result is replayable, auditable decision traces without constraining execution outcomes. DBL is positioned as an architectural foundation for accountability and verifiable decision traces, not as a policy framework or learning-based safety mechanism.
+\end{abstract}
+
+\section{Introduction}
+
+\paragraph{Problem Context.}
+Governance in non-deterministic systems requires decisions that are auditable, replayable, and accountable even when execution outcomes vary. When behavior is non-deterministic, it becomes difficult to determine whether a decision was derived from authoritative inputs or influenced by observations. This complicates reconstruction of normative state and weakens the ability to replay decisions as part of an audit record.
+
+Non-determinism blurs the boundary between what is decided and what is observed. If execution outputs or timing signals can affect governance, accountability becomes contingent on runtime artifacts rather than explicit decision records. In such settings, replayability and auditability are not guaranteed.
+
+\paragraph{Limitations of Existing Approaches.}
+A common limitation is the entanglement of normativity with observation. Normative effects are often implicit and influenced by execution outputs or other observational data without explicit representation in a decision record. As a result, decisions are not replayable from authoritative inputs alone and accountability depends on non-replayable traces.
+
+\paragraph{Deterministic Boundary Layers.}
+Deterministic Boundary Layers (DBL) is an architectural model for governing non-deterministic execution. The central rule is that all normativity appears only as explicit DECISION events in an append-only event stream V. Governance (G) is separated from boundaries (L), with L admitting authoritative inputs and G operating only on those inputs.
+
+Observational data, including execution outputs and other runtime artifacts, is treated as non-normative. Decisions are recorded before execution and are derived only from authoritative inputs, making normative state replayable and auditable without constraining execution outcomes.
+
+\paragraph{Contributions.}
+\begin{itemize}
+  \item Governance decisions are deterministic under non-deterministic execution.
+  \item The separation between governance and boundaries is invariant.
+  \item Normative state is replay-equivalent with respect to V.
+  \item Observations do not interfere with governance decisions.
+\end{itemize}
+
+\paragraph{Paper Organization.}
+The paper introduces the architectural model and its axioms, states the four claims, provides proof sketches under fixed assumptions, and presents a single case study, followed by a related work mapping.
+
+\section{Model and Axioms}
+Placeholder. Define $\Delta$, $V$, $t$, $G$, and $L$ and state the axioms.
+
+\section{Claims}
+Placeholder. Present Claims 1--4 and their statements.
+
+\section{Proof Sketches}
+Placeholder. Provide proof sketches under assumptions A1--A5.
+
+\section{Case Study}
+Placeholder. Summarize the prompt-injection scenario and the V trace outline.
+
+\section{Related Work}
+Placeholder. Map DBL to existing categories without direct implementation comparison.
+
+\section{Conclusion}
+Placeholder. Summarize implications and scope.
+
+\bibliographystyle{plain}
+\bibliography{refs}
+
+\end{document}

@@ -1,0 +1,15 @@
+\section{Claims}
+
+The following claims formalize the core properties of DBL. Each claim holds under assumptions A1–A5.
+
+\paragraph{Claim 1 (Deterministic Governance under Non-Deterministic Execution).}
+For fixed authoritative inputs and fixed policy configuration, the system produces the same ordered sequence of DECISION events in V, regardless of non-deterministic execution behavior.
+
+\paragraph{Claim 2 (Invariance of G/L Separation).}
+If governance consumes only the authoritative input set admitted by L, then observational data cannot have normative effect without explicit admission, and the separation of G and L is invariant under replay, policy evolution, and effector variation.
+
+\paragraph{Claim 3 (Replay Equivalence of Normative State).}
+Replaying V from the same initial state yields the same sequence of normative states and DECISION events as the original execution.
+
+\paragraph{Claim 4 (Observational Non-Interference).}
+Observational data does not influence governance decisions; for any observational variation, governance outcomes are determined solely by the authoritative input set.

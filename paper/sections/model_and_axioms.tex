@@ -1,0 +1,26 @@
+\section{Model and Axioms}
+
+\paragraph{Model Overview.}
+The model defines a deterministic governance layer over non-deterministic execution. Normativity is separated from observation by construction: decisions are explicit and recorded, while execution outputs are treated as observational.
+
+\paragraph{Core Elements.}
+\textbf{Δ (Delta).} Δ denotes an atomic event or action. It is the minimal unit of change represented in the model. Δ may be normative or observational depending on its event type.  
+\textbf{V.} V is an append-only event stream composed of ordered Δ events. V is authoritative for normativity within the model.  
+\textbf{t.} t denotes logical order derived from V. It is defined by the sequence of events in V rather than by wall-clock time.  
+\textbf{G.} G is the governance function that produces explicit DECISION events. G operates only on authoritative inputs admitted by L.  
+\textbf{L.} L is the boundary function that admits authoritative inputs. L defines what is eligible to influence governance decisions.
+
+\paragraph{Normativity and Observation.}
+Normative effects determine whether actions are allowed or denied. In this model, only DECISION events are normative. Execution outputs, traces, and timing are observational and have no normative effect.
+
+\paragraph{Axioms.}
+\begin{itemize}
+  \item \textbf{A1 (Append-only V):} The event stream V is append-only and events are immutable once written.
+  \item \textbf{A2 (DECISION primacy):} All normative effects are represented only by explicit DECISION events in V.
+  \item \textbf{A3 (Authoritative inputs):} Governance consumes only the authoritative input set I\_L admitted by L; observational data is excluded.
+  \item \textbf{A4 (Deterministic governance):} For fixed authoritative inputs and fixed policy configuration, governance G deterministically produces DECISION events.
+  \item \textbf{A5 (Pre-execution decision):} DECISION events are written before any corresponding execution.
+\end{itemize}
+
+\paragraph{Interpretation Notes.}
+If any axiom is violated, the model’s guarantees do not apply. The axioms are intentionally restrictive and define the scope of the formal claims.
