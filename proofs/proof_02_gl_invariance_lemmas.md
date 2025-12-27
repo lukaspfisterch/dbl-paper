@@ -2,7 +2,7 @@
 
 ## Theorem (Claim 1)
 
-**Statement:** Given two boundary runs $R_1$ and $R_2$ with identical authoritative inputs $I_L$, identical boundary configuration $C = (\mathrm{boundary\_version}, \mathrm{boundary\_config\_hash})$, and identical policy versioning $p_v$, the system produces the same ordered sequence of normative DECISION events in $V$, independent of any non-deterministic behavior of the effector.
+**Statement:** Given two boundary runs $R_1$ and $R_2$ with identical authoritative inputs $I_L$, identical boundary configuration $C = (\texttt{boundary\_version}, \texttt{boundary\_config\_hash})$, and identical policy versioning $p_v$, the system produces the same ordered sequence of normative DECISION events in $V$, independent of any non-deterministic behavior of the effector.
 
 **Formal:** $(I_L, C, p_v)_1 = (I_L, C, p_v)_2 \implies V_{norm,1} \equiv_{norm} V_{norm,2}$
 
@@ -43,14 +43,14 @@ and $I_L = \{i \mid L.\text{admit}(i, C) = \text{PASS}\}$ contains all data that
 
 **Proof:**
 
-By definition of $C$ (from formal definitions), $C = (\mathrm{boundary\_version}, \mathrm{boundary\_config\_hash}, L_{\mathrm{rules}})$ where $L_{\mathrm{rules}}$ is a deterministic function.
+By definition of $C$ (from formal definitions), $C = (\texttt{boundary\_version}, \texttt{boundary\_config\_hash}, L_{\texttt{rules}})$ where $L_{\texttt{rules}}$ is a deterministic function.
 
 For any raw input $i$ and fixed $C$:
 - $L.\text{admit}(i, C)$ evaluates $L_{\text{rules}}$ deterministically
 - No access to time, randomness, or IO (by construction of L)
 - Therefore: $L.\text{admit}(i, C)$ is a pure function
 
-Since $L_{\mathrm{rules}}$ is versioned (via $\mathrm{boundary\_version}$) and hashed (via $\mathrm{boundary\_config\_hash}$), any change to admission behavior produces a different $C$.
+Since $L_{\texttt{rules}}$ is versioned (via $\texttt{boundary\_version}$) and hashed (via $\texttt{boundary\_config\_hash}$), any change to admission behavior produces a different $C$.
 
 Therefore, for identical $C$ and identical raw input $i$, $L.\text{admit}(i, C)$ produces identical results.
 
