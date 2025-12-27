@@ -1,0 +1,165 @@
+\subsection{Formal Definitions}
+
+We define the core elements of the DBL model. All definitions are normative for the claim set and proofs.
+
+\begin{definition}[Event Stream V]
+V is an append-only, totally ordered sequence of events. Each event $e \in V$ has a unique index $t(e) \in \mathbb{N}$ representing its position in the stream. Events are immutable once appended.
+
+Formally: $V = \langle e_0, e_1, e_2, \ldots \rangle$ where $\forall i < j: t(e_i) < t(e_j)$.
+\end{definition}
+
+\begin{definition}[Event Kinds]
+Events are classified into four kinds:
+\begin{itemize}
+  \item \textbf{INTENT}: Records the intention to execute, including authoritative inputs.
+  \item \textbf{DECISION}: Records a normative decision (ALLOW or DENY) by governance.
+  \item \textbf{EXECUTION}: Records the result of effector execution (observational).
+  \item \textbf{PROOF}: Records evidence or verification artifacts (observational).
+\end{itemize}
+
+Only DECISION events are normative. INTENT events establish context. EXECUTION and PROOF events are observational only.
+\end{definition}
+
+\begin{definition}[Normative Events]
+Let $V_{norm} \subseteq V$ denote the subset of normative events. Under DBL:
+
+$$V_{norm} = \{e \in V \mid \text{kind}(e) = \text{DECISION}\}$$
+
+All normative effects are represented exclusively by events in $V_{norm}$.
+\end{definition}
+
+\begin{definition}[Boundary Configuration C]
+The boundary configuration $C$ is a versioned, deterministic specification of admission rules. 
+
+$$C = (\text{boundary\_version}, \text{boundary\_config\_hash}, L_{\text{rules}})$$
+
+where:
+\begin{itemize}
+  \item $\text{boundary\_version} \in \mathbb{N}$ is a monotonically increasing version identifier.
+  \item $\text{boundary\_config\_hash}$ is a cryptographic hash (e.g., SHA-256) over the canonicalized boundary rules.
+  \item $L_{\text{rules}}$ is a deterministic function defining which inputs are authoritative.
+\end{itemize}
+
+Changes to $L_{\text{rules}}$ that alter admission behavior \textbf{must} increment $\text{boundary\_version}$.
+\end{definition}
+
+\begin{definition}[Authoritative Inputs $I_L$]
+The authoritative input set $I_L$ consists of all data admitted by boundaries $L$ for governance evaluation.
+
+$$I_L = \{i \mid L.\text{admit}(i, C) = \text{PASS}\}$$
+
+$I_L$ is:
+\begin{itemize}
+  \item \textbf{Complete}: All data influencing governance is in $I_L$.
+  \item \textbf{Deterministic}: For fixed $C$ and input $i$, $L.\text{admit}(i, C)$ is deterministic.
+  \item \textbf{Non-observational}: $I_L \cap O_{obs} = \emptyset$ (defined below).
+\end{itemize}
+\end{definition}
+
+\begin{definition}[Observational Data $O_{obs}$]
+Observational data $O_{obs}$ comprises all runtime artifacts whose values depend on non-deterministic execution behavior.
+
+$$O_{obs} = \{\text{traces, outputs, timing, errors, metrics, \ldots}\}$$
+
+By definition: $O_{obs} \not\subseteq I_L$ and $O_{obs}$ has no normative effect unless explicitly admitted into $I_L$ through a versioned mechanism.
+\end{definition}
+
+\begin{definition}[Governance Function G]
+Governance $G$ is a deterministic, pure function that maps authoritative inputs to normative decisions.
+
+$$G: (I_L, \text{policy\_version}) \to \text{DECISION}$$
+
+where:
+\begin{itemize}
+  \item $G$ has no access to $O_{obs}$ or effector state.
+  \item $G$ has no internal mutable state.
+  \item For fixed $(I_L, \text{policy\_version})$, $G$ produces identical DECISION events.
+\end{itemize}
+
+$G$ produces DECISION events before any effector execution.
+\end{definition}
+
+\begin{definition}[Boundaries L]
+Boundaries $L$ are the constraint layer controlling information flow into governance.
+
+$L$ has two primary functions:
+\begin{enumerate}
+  \item \textbf{Admission}: $L.\text{admit}(i, C) \in \{\text{PASS}, \text{REJECT}\}$ determines whether input $i$ is authoritative.
+  \item \textbf{Shaping}: $L.\text{shape}(i, C) \to i'$ transforms inputs (e.g., masking, normalization) deterministically.
+\end{enumerate}
+
+$L$ operates \textbf{before} INTENT events are created. If $L.\text{admit}(i, C) = \text{REJECT}$, no INTENT appears in $V$ (pre-ontological rejection).
+
+$L$ is \textbf{not normative}: $L$ decides what information is admissible, not what is allowed.
+\end{definition}
+
+\begin{definition}[Normative Equivalence $\equiv_{norm}$]
+Two event streams $V_1$ and $V_2$ are normatively equivalent, written $V_1 \equiv_{norm} V_2$, if and only if:
+
+\begin{enumerate}
+  \item They contain the same DECISION events: $V_{1,norm} = V_{2,norm}$
+  \item DECISION events appear in the same order: $\forall e_1, e_2 \in V_{norm}: t_{V_1}(e_1) < t_{V_1}(e_2) \iff t_{V_2}(e_1) < t_{V_2}(e_2)$
+  \item DECISION events have identical policy versions and outcomes.
+\end{enumerate}
+
+Normative equivalence \textbf{does not require}:
+\begin{itemize}
+  \item Identical timestamps (observational)
+  \item Identical EXECUTION outputs (observational)
+  \item Identical PROOF artifacts (observational)
+\end{itemize}
+
+Two executions are normatively equivalent if their decision sequences are identical and identically ordered.
+\end{definition}
+
+\begin{definition}[Replay]
+Replay is the process of reconstructing normative state from $V$ starting from initial state $S_0$.
+
+For each event $e \in V$ in order:
+\begin{itemize}
+  \item If $e \in V_{norm}$ (DECISION event): Apply normative state transition $S_{t+1} = f(S_t, e)$
+  \item Otherwise: Ignore (EXECUTION, PROOF are observational)
+\end{itemize}
+
+Replay is deterministic if $f$ is deterministic and $V$ is complete for normative state.
+\end{definition}
+
+\begin{definition}[Domain of Governance]
+The domain of governance, written $\text{dom}(G)$, is the set of all inputs that $G$ may access.
+
+Under DBL: $\text{dom}(G) = I_L$
+
+Therefore: $O_{obs} \not\in \text{dom}(G)$ (observational data is not accessible to governance).
+\end{definition}
+
+\subsection{Key Properties from Definitions}
+
+From these definitions, we derive three immediate properties:
+
+\begin{property}[Separation of Concerns]
+Boundaries $L$ and Governance $G$ operate on distinct domains:
+\begin{itemize}
+  \item $L$ operates on raw inputs and determines $I_L$
+  \item $G$ operates only on $I_L$ and produces DECISION events
+  \item $L \cap G = \emptyset$ (no shared normative responsibility)
+\end{itemize}
+\end{property}
+
+\begin{property}[Pre-ontological Rejection]
+If $L.\text{admit}(i, C) = \text{REJECT}$, then no event corresponding to $i$ appears in $V$. This rejection is:
+\begin{itemize}
+  \item \textbf{Pre-ontological}: Occurs before $V$ construction
+  \item \textbf{Non-normative}: Does not produce a DECISION event
+  \item \textbf{Constraint enforcement}: Restricts information flow, not decisions
+\end{itemize}
+\end{property}
+
+\begin{property}[Normative Minimalism]
+The only normative primitive in DBL is the DECISION event. All other events are either:
+\begin{itemize}
+  \item \textbf{Contextual} (INTENT): Establish inputs but have no normative effect
+  \item \textbf{Observational} (EXECUTION, PROOF): Record outcomes but cannot influence decisions
+\end{itemize}
+\end{property}
+
+These definitions establish a formal foundation for the axioms and claims that follow.

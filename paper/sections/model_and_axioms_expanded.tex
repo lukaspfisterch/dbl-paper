@@ -1,0 +1,349 @@
+\section{Model and Axioms}
+
+We present the formal model underlying DBL. The model is minimal: it defines what must be true for the claims to hold, without prescribing implementation details.
+
+\subsection{Core Elements}
+
+\subsubsection{Event Stream V (Behavior)}
+
+The event stream $V$ is the sole authoritative record of system behavior. It is:
+\begin{itemize}
+  \item \textbf{Append-only}: Events are never deleted or modified once written.
+  \item \textbf{Totally ordered}: Each event $e \in V$ has a unique index $t(e) \in \mathbb{N}$ representing its position.
+  \item \textbf{Immutable}: Event content and ordering are fixed after append.
+\end{itemize}
+
+Formally:
+$$V = \langle e_0, e_1, e_2, \ldots \rangle$$
+where $\forall i < j: t(e_i) < t(e_j)$.
+
+The index $t(e)$ establishes logical time. Physical timestamps are observational metadata.
+
+\subsubsection{Event Kinds}
+
+Events are classified by kind:
+\begin{itemize}
+  \item \textbf{INTENT}: Records the intention to execute. Contains authoritative inputs from $I_L$.
+  \item \textbf{DECISION}: Records a normative decision (ALLOW or DENY) by governance $G$.
+  \item \textbf{EXECUTION}: Records the effector's execution result. Observational only.
+  \item \textbf{PROOF}: Records verification artifacts or evidence. Observational only.
+\end{itemize}
+
+\textbf{Normative events} are only DECISION events:
+$$V_{norm} = \{e \in V \mid \text{kind}(e) = \text{DECISION}\}$$
+
+INTENT events establish context. EXECUTION and PROOF events provide observational data but have no normative effect.
+
+\subsubsection{Decisions ($\Delta$)}
+
+A decision $\delta \in \Delta$ is a normative determination of what is allowed or forbidden. In DBL:
+$$\Delta \subseteq V_{norm}$$
+
+All normative effects appear only as explicit DECISION events in $V$. There is no implicit normativity.
+
+\subsubsection{Governance (G)}
+
+Governance $G$ is a deterministic function that maps authoritative inputs to normative decisions:
+$$G: (I_L, p_v) \to \text{DECISION}$$
+
+where:
+\begin{itemize}
+  \item $I_L$ is the authoritative input set (defined below)
+  \item $p_v$ is the policy version identifier
+\end{itemize}
+
+$G$ has no access to:
+\begin{itemize}
+  \item Observational data ($O_{obs}$)
+  \item Effector state or outputs
+  \item Time, randomness, I/O, or network
+  \item Internal mutable state
+\end{itemize}
+
+$G$ is purely functional: identical inputs produce identical outputs.
+
+\subsubsection{Boundaries (L)}
+
+Boundaries $L$ control information flow before governance. $L$ has two functions:
+
+\textbf{Admission:}
+$$L.\text{admit}: (\text{input}, C) \to \{\text{PASS}, \text{REJECT}\}$$
+
+where $C = (\text{boundary\_version}, \text{boundary\_config\_hash}, L_{\text{rules}})$ is the boundary configuration.
+
+\textbf{Shaping:}
+$$L.\text{shape}: (\text{input}, C) \to \text{input}'$$
+
+$L$ is deterministic and has no access to time, randomness, I/O, or effector state.
+
+Critically: $L$ operates \textbf{pre-ontologically}. If $L.\text{admit}(\text{input}, C) = \text{REJECT}$, no INTENT event is created in $V$. This is constraint enforcement without normative representation.
+
+\subsubsection{Authoritative Inputs ($I_L$)}
+
+The authoritative input set $I_L$ consists of all data admitted by $L$ for governance evaluation:
+$$I_L = \{i \mid L.\text{admit}(i, C) = \text{PASS}\}$$
+
+$I_L$ is:
+\begin{itemize}
+  \item \textbf{Complete}: All data influencing $G$ is in $I_L$
+  \item \textbf{Deterministic}: For fixed $C$ and input $i$, admission is deterministic
+  \item \textbf{Non-observational}: $I_L \cap O_{obs} = \emptyset$
+\end{itemize}
+
+\subsubsection{Observational Data ($O_{obs}$)}
+
+Observational data comprises all runtime artifacts whose values depend on non-deterministic execution:
+$$O_{obs} = \{\text{traces, outputs, timing, errors, metrics, runtime artifacts}\}$$
+
+By construction: $O_{obs} \not\subseteq I_L$ and $O_{obs}$ has no normative effect unless explicitly admitted through a versioned mechanism.
+
+\subsubsection{Normative Equivalence ($\equiv_{norm}$)}
+
+Two event streams $V_1$ and $V_2$ are normatively equivalent if they contain the same DECISION events in the same order:
+
+$$V_1 \equiv_{norm} V_2 \iff V_{1,norm} = V_{2,norm} \land \text{order}(V_{1,norm}) = \text{order}(V_{2,norm})$$
+
+Normative equivalence does not require identical timestamps, EXECUTION outputs, or PROOF artifacts.
+
+\subsection{The Six Axioms}
+
+We state six axioms that define the minimal requirements for deterministic governance.
+
+\begin{axiom}[Ontological Scope - A0]
+\label{axiom:a0}
+$V$ constitutes the normative ontology of authorized behavior. $V$ does not claim completeness over pre-normative constraint enforcement (L's rejections), observational data ($O_{obs}$), or physical system events.
+\end{axiom}
+
+\textbf{Rationale:} A0 clarifies what $V$ represents. $V$ is the normative record (what was decided), not a complete causal log (everything that happened). L's rejections occur before $V$ construction and are not normative decisions.
+
+\begin{axiom}[Append-only V - A1]
+\label{axiom:a1}
+The event stream $V$ is append-only. Events are immutable once written. Events have a total order defined by index $t(e)$.
+\end{axiom}
+
+\textbf{Rationale:} Immutability enables replay and auditability. Without A1, $V$ could be altered post-hoc, making historical decisions unverifiable.
+
+\begin{axiom}[DECISION Primacy - A2]
+\label{axiom:a2}
+All normative effects are represented only by explicit DECISION events in $V$. No implicit normativity exists outside DECISION events.
+\end{axiom}
+
+\textbf{Rationale:} A2 ensures normativity is explicit and auditable. If normative effects arise outside DECISION events (e.g., in EXECUTION or through side effects), accountability is lost.
+
+\begin{axiom}[Authoritative Inputs - A3]
+\label{axiom:a3}
+Governance $G$ consumes only the authoritative input set $I_L$ admitted by boundaries $L$. Observational data $O_{obs}$ is excluded from $\text{dom}(G)$.
+\end{axiom}
+
+\textbf{Rationale:} A3 enforces the separation between authoritative (pre-execution) and observational (post-execution) data. Without A3, execution outputs could influence decisions, violating determinism.
+
+\begin{axiom}[Deterministic Governance - A4]
+\label{axiom:a4}
+For fixed authoritative inputs $I_L$ and fixed policy version $p_v$, governance $G$ deterministically produces DECISION events. $G$ has no access to time, randomness, I/O, network, or mutable state.
+\end{axiom}
+
+\textbf{Rationale:} A4 guarantees that identical inputs produce identical decisions. This is the foundation of replay equivalence and auditability.
+
+\begin{axiom}[Pre-execution Decision - A5]
+\label{axiom:a5}
+DECISION events are written to $V$ before any corresponding effector execution. Execution occurs only after the decision is recorded.
+\end{axiom}
+
+\textbf{Rationale:} A5 ensures causal ordering: decisions precede execution, preventing execution outputs from influencing decisions. Without A5, temporal feedback loops are possible.
+
+\begin{axiom}[Pre-ontological Boundaries - A6]
+\label{axiom:a6}
+Boundaries $L$ operate before INTENT events are created. $L$ may reject inputs without producing events in $V$. L's rejections are constraint enforcement, not normative decisions.
+\end{axiom}
+
+\textbf{Rationale:} A6 formalizes the pre-ontological nature of $L$. L filters information flow but does not make normative decisions. This allows constraint enforcement (rate limiting, schema validation) without event inflation in $V$.
+
+\subsection{Axiom Dependencies}
+
+The claims rely on these axioms as follows:
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|l|l|}
+\hline
+\textbf{Claim} & \textbf{Uses Axioms} \\
+\hline
+Claim 1 (Deterministic Governance) & A1, A2, A3, A4, A5 \\
+Claim 2 (G/L Invariance) & A1, A2, A3, A4, A6 \\
+Claim 3 (Replay Equivalence) & A1, A2, A3, A4, A5 \\
+Claim 4 (Observational Non-Interference) & A3, A4, A5, A6 \\
+\hline
+\end{tabular}
+\caption{Axiom dependencies for each claim.}
+\label{tab:axiom-deps}
+\end{table}
+
+All claims depend on A3 and A4 (authoritative inputs and determinism). Claims 1 and 3 additionally require A5 (pre-execution decision). Claim 2 requires A6 (pre-ontological boundaries).
+
+\subsection{Architectural Flow}
+
+The DBL architecture enforces the axioms through explicit separation of concerns. The flow is:
+
+\begin{enumerate}
+  \item \textbf{Raw input arrives} (external, untrusted)
+  
+  \item \textbf{Boundary layer L evaluates:} $L.\text{admit}(\text{input}, C)$
+  \begin{itemize}
+    \item If REJECT: No INTENT created. HTTP error returned. (A6: Pre-ontological)
+    \item If PASS: Input shaped, admitted to $I_L$. Proceed to step 3.
+  \end{itemize}
+  
+  \item \textbf{INTENT event appended to V:}
+  \begin{itemize}
+    \item Contains authoritative inputs from $I_L$
+    \item Metadata includes boundary\_version, boundary\_config\_hash
+    \item Immutable once written (A1: Append-only)
+  \end{itemize}
+  
+  \item \textbf{Governance G evaluates:} $G(I_L, p_v) \to \text{DECISION}$
+  \begin{itemize}
+    \item Consumes only $I_L$ (A3: Authoritative inputs)
+    \item Deterministic evaluation (A4: Deterministic governance)
+    \item Produces ALLOW or DENY with reason\_code
+  \end{itemize}
+  
+  \item \textbf{DECISION event appended to V:}
+  \begin{itemize}
+    \item Before any execution (A5: Pre-execution decision)
+    \item Contains outcome, reason\_code, policy\_version
+    \item Normative effect recorded (A2: DECISION primacy)
+  \end{itemize}
+  
+  \item \textbf{Execution (if ALLOW):} Effector executes
+  \begin{itemize}
+    \item Non-deterministic (e.g., LLM call)
+    \item Produces outputs, traces, timing (all $\in O_{obs}$)
+    \item Cannot influence DECISION (already recorded)
+  \end{itemize}
+  
+  \item \textbf{EXECUTION event appended to V:}
+  \begin{itemize}
+    \item Observational only (not normative)
+    \item Contains trace digest, outputs, errors
+    \item Does not affect normative state (A3: excludes $O_{obs}$ from $G$)
+  \end{itemize}
+  
+  \item \textbf{Optional PROOF event:} Verification artifacts
+  \begin{itemize}
+    \item Observational evidence
+    \item Does not create normative obligations
+  \end{itemize}
+\end{enumerate}
+
+This flow ensures:
+\begin{itemize}
+  \item L operates before V construction (A6)
+  \item G decides before execution (A5)
+  \item All normative effects explicit in V (A2)
+  \item Observational data excluded from decisions (A3)
+  \item Determinism preserved (A4)
+  \item V is immutable record (A1)
+\end{itemize}
+
+\subsection{Key Properties from the Model}
+
+From the axioms and definitions, we derive immediate properties:
+
+\begin{property}[Separation of G and L]
+Governance (G) and Boundaries (L) operate on distinct domains with distinct responsibilities:
+\begin{itemize}
+  \item L determines what information is \textbf{admissible} (constraint enforcement)
+  \item G determines what actions are \textbf{allowed} (normative decision)
+  \item L operates pre-ontologically (before V construction)
+  \item G operates normatively (produces DECISION events in V)
+\end{itemize}
+This separation is invariant: L cannot make normative decisions, G cannot bypass boundaries.
+\end{property}
+
+\begin{property}[Normative Minimalism]
+The only normative primitive in DBL is the DECISION event. All other events are:
+\begin{itemize}
+  \item \textbf{Contextual} (INTENT): Establish inputs but have no normative effect
+  \item \textbf{Observational} (EXECUTION, PROOF): Record outcomes but cannot influence decisions
+\end{itemize}
+This minimalism enables clear accountability: to audit what was decided, read $V_{norm}$.
+\end{property}
+
+\begin{property}[Feed-Forward Consistency]
+DBL enforces feed-forward flow: inputs → decisions → execution. Feedback loops are prohibited:
+\begin{itemize}
+  \item L reads raw inputs, not execution outputs
+  \item G reads $I_L$, not $O_{obs}$
+  \item DECISION precedes EXECUTION (causal ordering)
+\end{itemize}
+This prevents iterative refinement based on observations, which would violate determinism.
+\end{property}
+
+\begin{property}[Replay Sufficiency]
+Given $V$ and initial state $S_0$, normative state is fully reconstructable:
+$$S_t = f(S_0, V[0:t])$$
+No external dependencies (execution infrastructure, timing, observations) are needed. This makes replay deterministic and infrastructure-independent.
+\end{property}
+
+\subsection{Non-Goals and Scope Boundaries}
+
+The model explicitly does \textbf{not} address:
+
+\begin{itemize}
+  \item \textbf{Policy correctness or optimality:} DBL ensures decisions are deterministic and auditable, not correct.
+  
+  \item \textbf{Execution determinism:} Effector outputs may vary. Only decisions are deterministic.
+  
+  \item \textbf{Performance or latency:} DBL focuses on normative guarantees, not efficiency.
+  
+  \item \textbf{Side-channel resistance:} Timing attacks and resource monitoring are out of scope.
+  
+  \item \textbf{Learning-based policies:} Adaptive policies that incorporate execution feedback violate A3 and A4 unless feedback is explicitly versioned and admitted.
+  
+  \item \textbf{Multi-tenancy or federation:} Extensions needed for cross-tenant coordination.
+\end{itemize}
+
+\subsection{Interpretation Rule}
+
+If an observation influences a decision without explicit admission into $I_L$ through a versioned boundary update, the system violates the model and the claims do not apply.
+
+This rule is strict: DBL treats observational influence as an invariant violation, not a design preference. Systems that allow implicit feedback (e.g., adjusting policies based on success rates without versioning) are outside the model's guarantees.
+
+\subsection{Comparison to Alternative Models}
+
+\subsubsection{Event Sourcing}
+
+Event sourcing treats all events as state-changing. DBL distinguishes:
+\begin{itemize}
+  \item \textbf{Normative events} (DECISION): Change normative state
+  \item \textbf{Observational events} (EXECUTION, PROOF): Do not change normative state
+\end{itemize}
+
+This distinction enables replay of normative state without re-executing non-deterministic effectors.
+
+\subsubsection{State Machines (e.g., TLA+)}
+
+State machines focus on distributed consensus and correctness. DBL focuses on normative accountability under non-deterministic execution.
+
+TLA+ verifies that all executions satisfy invariants. DBL ensures decisions are independent of execution outcomes.
+
+\subsubsection{XACML / ABAC}
+
+XACML allows environmental attributes (time, location) as decision inputs. DBL prohibits observational inputs unless explicitly admitted and versioned.
+
+XACML policies may be non-deterministic (time-based). DBL policies are strictly deterministic.
+
+\subsection{Summary}
+
+The DBL model consists of:
+\begin{itemize}
+  \item \textbf{Six axioms} (A0-A6) defining minimal requirements
+  \item \textbf{Core elements}: $V$, $\Delta$, $G$, $L$, $I_L$, $O_{obs}$
+  \item \textbf{Separation invariant}: G and L have distinct domains and responsibilities
+  \item \textbf{Normative minimalism}: Only DECISION events are normative
+  \item \textbf{Feed-forward flow}: Inputs → Decisions → Execution (no feedback)
+\end{itemize}
+
+From this minimal model, the four claims (Deterministic Governance, G/L Invariance, Replay Equivalence, Observational Non-Interference) follow formally.
+
+The model is not prescriptive about implementation but defines what must hold for the guarantees to apply. Systems that violate the axioms lose the deterministic and replay properties.

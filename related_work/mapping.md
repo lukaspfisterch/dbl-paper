@@ -1,5 +1,9 @@
 # Related Work Mapping
 
+**Status:** Migrated to `paper/sections/related_work.tex`
+
+This file served as template. Final version is in LaTeX.
+
 This file maps DBL to categories of prior work without naming specific systems. It provides a structure for later citation.
 
 ## Categories

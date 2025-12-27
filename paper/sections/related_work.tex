@@ -1,0 +1,189 @@
+\section{Related Work}
+
+DBL draws from and extends work in AI safety, formal methods, information flow control, and audit systems. We position DBL relative to five categories of prior work.
+
+\subsection{AI Safety and Governance}
+
+\paragraph{Constitutional AI and RLHF.}
+Constitutional AI~\cite{bai2022constitutional} uses self-critique and reinforcement learning from human feedback to align language models with safety principles. RLHF-based approaches~\cite{ouyang2022training} iteratively refine model behavior through human evaluations. These methods treat safety as an optimization problem over model outputs.
+
+\textbf{Normative primitive:} Constitutional principles or human preferences encoded in reward signals.
+
+\textbf{Observational handling:} Model outputs are fed back as training signals. Safety emerges through iterative refinement.
+
+\textbf{Replay model:} Non-deterministic. Different training runs yield different policies. No explicit decision record.
+
+\textbf{DBL delta:} DBL separates normative decisions (DECISION events) from execution outputs (observational). Decisions are deterministic, recorded before execution, and replayable from authoritative inputs. Constitutional AI integrates normativity with execution; DBL keeps them distinct.
+
+\paragraph{Guardrails and Prompt Filtering.}
+Guardrail systems~\cite{rebedea2023nemo,inan2023llama} filter prompts and responses against safety policies. Typically implemented as pre-processing (input filtering) or post-processing (output filtering) layers.
+
+\textbf{Normative primitive:} Filter rules (regex, classifiers, keyword lists).
+
+\textbf{Observational handling:} Often use LLM outputs to refine filtering heuristics. Some systems adapt filters based on observed violations.
+
+\textbf{Replay model:} Limited. Filter decisions may not be logged. Adaptive filters are non-deterministic.
+
+\textbf{DBL delta:} DBL requires explicit DECISION events before execution. Guardrails often operate reactively (post-execution). DBL's boundary layer (L) is deterministic and versioned; guardrails may use heuristics or learned filters. DBL enforces observational non-interference; guardrails may adjust based on outputs.
+
+\paragraph{Red Teaming and Adversarial Testing.}
+Red teaming~\cite{perez2022red,ganguli2022red} probes model behavior with adversarial prompts to discover failure modes. Used for safety evaluation, not runtime governance.
+
+\textbf{DBL delta:} Red teaming is evaluation; DBL is enforcement. Red teaming identifies weaknesses; DBL enforces decisions before execution. Complementary approaches.
+
+\subsection{Formal Methods and Verification}
+
+\paragraph{TLA+ and State Machines.}
+TLA+~\cite{lamport2002specifying} specifies distributed systems as state machines with temporal properties. Enables verification of safety and liveness properties.
+
+\textbf{Normative primitive:} State transitions specified as actions. Invariants define allowed states.
+
+\textbf{Observational handling:} Observations are external to the specification. TLA+ models abstract system behavior.
+
+\textbf{Replay model:} Deterministic if actions are deterministic. Traces can be replayed for verification.
+
+\textbf{DBL delta:} TLA+ focuses on consensus and distributed correctness. DBL focuses on normative decisions under non-deterministic execution. TLA+ verifies that all executions satisfy invariants; DBL ensures decisions are independent of execution outcomes. Both use append-only traces, but DBL distinguishes normative events (DECISION) from observational events (EXECUTION).
+
+\paragraph{Event Sourcing and CQRS.}
+Event sourcing~\cite{fowler2005event} treats events as the source of truth. Commands produce events; queries read projections. CQRS (Command Query Responsibility Segregation) separates write and read models.
+
+\textbf{Normative primitive:} Events represent state changes. Commands are authoritative.
+
+\textbf{Observational handling:} Projections derive read models from events. Projections are descriptive, not normative.
+
+\textbf{Replay model:} Deterministic. Events are append-only and immutable. State is reconstructed by replaying events.
+
+\textbf{DBL delta:} Event sourcing does not distinguish normative from observational events. All events affect state. DBL separates normative (DECISION) from observational (EXECUTION, PROOF). Event sourcing does not enforce pre-execution decisions or observational non-interference. DBL adds G/L separation and deterministic governance.
+
+\subsection{Information Flow Control}
+
+\paragraph{Decentralized Information Flow Control (DIFC).}
+DIFC systems~\cite{myers1999jflow,zeldovich2006making} enforce confidentiality and integrity through labeled data and security policies. Information flow is tracked statically or dynamically.
+
+\textbf{Normative primitive:} Labels and security policies. Data flows are restricted based on labels.
+
+\textbf{Observational handling:} Observations may carry labels. Covert channels are a concern.
+
+\textbf{Replay model:} Not typically a goal. DIFC enforces information flow during execution.
+
+\textbf{DBL delta:} DIFC controls data flows for confidentiality and integrity. DBL controls normative influence for auditability. DIFC labels data; DBL separates authoritative from observational. DIFC's boundary enforcement resembles DBL's L layer, but DBL adds normative primacy (DECISION events) and replay equivalence.
+
+\paragraph{Reference Monitors.}
+Reference monitors~\cite{anderson1972reference} mediate access to resources. Enforce security policies at runtime.
+
+\textbf{Normative primitive:} Access control decisions (allow or deny).
+
+\textbf{Observational handling:} May log access attempts. Decisions based on subject, object, action.
+
+\textbf{Replay model:} Logs may be append-only but decisions are not always deterministic (for example, time-based policies).
+
+\textbf{DBL delta:} Reference monitors enforce access control; DBL enforces normative governance. Reference monitors operate during execution; DBL decides before execution. Reference monitors may use context (time, load); DBL excludes observational context from decisions. DBL guarantees replay equivalence; reference monitors do not.
+
+\subsection{Policy Languages and Access Control}
+
+\paragraph{XACML and ABAC.}
+XACML~\cite{oasis2013xacml} is an XML-based policy language for attribute-based access control (ABAC). Policies evaluate attributes of subject, resource, action, and environment.
+
+\textbf{Normative primitive:} Policy rules. Decisions are permit or deny.
+
+\textbf{Observational handling:} Environment attributes (time, location) may influence decisions. Not explicitly separated as observational.
+
+\textbf{Replay model:} Not designed for replay. Decisions depend on attributes at evaluation time.
+
+\textbf{DBL delta:} XACML allows time and environment as decision inputs; DBL prohibits observational inputs. XACML policies are not necessarily deterministic (time-based rules); DBL policies are deterministic over authoritative inputs. XACML does not enforce pre-execution decisions or distinguish normative from observational events. DBL adds versioning, determinism, and replay guarantees.
+
+\subsection{Audit and Compliance Systems}
+
+\paragraph{Blockchain and Immutable Logs.}
+Blockchain systems~\cite{nakamoto2008bitcoin} provide append-only, tamper-evident logs. Used for audit trails and provenance.
+
+\textbf{Normative primitive:} Transactions. Consensus determines valid blocks.
+
+\textbf{Observational handling:} Observational data (timestamps, nonces) used for consensus, not normativity.
+
+\textbf{Replay model:} Deterministic given consensus. Replaying blocks reconstructs state.
+
+\textbf{DBL delta:} Blockchain focuses on consensus and immutability. DBL focuses on normative decisions under non-deterministic execution. Blockchain does not separate normative from observational events. DBL uses V (append-only stream) similar to blockchain but adds G/L separation, pre-execution decisions, and observational non-interference.
+
+\paragraph{Runtime Verification.}
+Runtime verification~\cite{leucker2009brief} monitors executions against formal specifications. Detects violations at runtime.
+
+\textbf{Normative primitive:} Specification (temporal logic, automata).
+
+\textbf{Observational handling:} Monitors observe execution traces. Violations are detected post-execution.
+
+\textbf{Replay model:} Traces can be replayed for offline verification.
+
+\textbf{DBL delta:} Runtime verification is reactive (detects violations after execution). DBL is proactive (decides before execution). Runtime verification monitors observational traces; DBL separates normative decisions from observations. Runtime verification does not enforce deterministic governance; DBL does.
+
+\subsection{Summary Table}
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{|l|l|l|l|l|}
+\hline
+\textbf{Category} & \textbf{Normative} & \textbf{Observational} & \textbf{Replay} & \textbf{DBL Delta} \\
+\textbf{} & \textbf{Primitive} & \textbf{Handling} & \textbf{Model} & \textbf{} \\
+\hline
+Constitutional AI & Principles/ & Outputs drive & Non-det & Decisions before \\
+& Rewards & refinement & & execution, det \\
+\hline
+Guardrails & Filter rules & May adapt & Limited & Pre-execution \\
+& & from outputs & logging & DECISION events \\
+\hline
+TLA+ & State & External to & Det if & Normative vs \\
+& transitions & spec & actions det & observational \\
+\hline
+Event Sourcing & Events & Projections & Det & Normative \\
+& & descriptive & & primacy \\
+\hline
+DIFC & Labels, & May carry & Not goal & G/L separation, \\
+& policies & labels & & replay \\
+\hline
+Reference & Access & May log & Not & Pre-execution \\
+Monitor & decisions & attempts & guaranteed & decisions \\
+\hline
+XACML/ABAC & Policy rules & Time/env & Not & Det governance, \\
+& & as input & designed & no obs input \\
+\hline
+Blockchain & Transactions & For consensus & Det given & Normative vs \\
+& & not normative & consensus & observational \\
+\hline
+Runtime & Spec & Monitors & Offline & Proactive \\
+Verification & violations & traces & possible & decisions \\
+\hline
+\end{tabular}
+\caption{Comparison of DBL with related approaches. DBL uniquely combines deterministic governance, pre-execution decisions, observational non-interference, and replay equivalence.}
+\label{tab:related-work}
+\end{table}
+
+\subsection{Positioning DBL}
+
+DBL is not a replacement for these approaches but an architectural foundation that can compose with them:
+
+\begin{itemize}
+  \item \textbf{Constitutional AI / RLHF:} DBL can record policy decisions before invoking constitutionally-aligned models. The model is the effector; DBL governs its invocation.
+  
+  \item \textbf{Guardrails:} Guardrail rules can be implemented in DBL's boundary layer (L) or governance layer (G). DBL makes their decisions explicit and replayable.
+  
+  \item \textbf{Event Sourcing:} DBL extends event sourcing by distinguishing normative events (DECISION) from observational events (EXECUTION, PROOF).
+  
+  \item \textbf{DIFC / Reference Monitors:} DBL's L layer enforces information flow (DIFC-like). DBL's G layer enforces normative decisions (reference monitor-like). DBL adds determinism and replay.
+  
+  \item \textbf{Audit Systems:} DBL's V stream is an audit log with normative primacy. Blockchain techniques can secure V.
+\end{itemize}
+
+The core contribution of DBL is not novelty in mechanisms but in the \textbf{separation of normative decisions from observational data} and the \textbf{guarantee of replay equivalence under non-deterministic execution}. This makes DBL an architectural pattern for accountable AI governance, not a specific implementation or policy framework.
+
+\subsection{Limitations and Future Work}
+
+DBL does not address:
+\begin{itemize}
+  \item \textbf{Policy quality:} DBL ensures decisions are deterministic and replayable, not correct or optimal.
+  \item \textbf{Side channels:} Beyond explicit admission rules, side channels (timing, resource usage) are out of scope.
+  \item \textbf{Multi-tenancy:} Federation and cross-tenant governance require extensions to the model.
+  \item \textbf{Adaptive policies:} Learning-based or feedback-driven policies violate determinism unless explicitly versioned.
+\end{itemize}
+
+Future work includes extending DBL to multi-agent settings, integrating with federated governance, and exploring mechanized verification of DBL properties in proof assistants.
