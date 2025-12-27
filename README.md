@@ -20,6 +20,8 @@ This repository is a claim-driven scaffold for a paper on Deterministic Boundary
 - [proofs/02_gl_invariance.md](proofs/02_gl_invariance.md)
 - [proofs/03_replay_equivalence.md](proofs/03_replay_equivalence.md)
 - [proofs/04_observational_noninterference.md](proofs/04_observational_noninterference.md)
+- [paper/main.tex](paper/main.tex)
+- [paper/refs.bib](paper/refs.bib)
 - [related_work/mapping.md](related_work/mapping.md)
 
 ## Reading order
