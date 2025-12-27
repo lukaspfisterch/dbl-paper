@@ -6,18 +6,18 @@ This repository is a claim-driven scaffold for a paper on Deterministic Boundary
 
 ## Repository layout
 
-- assumptions/scope.md
-- assumptions/threat_model.md
-- claims/01_claim_1.md ... claims/04_claim_4.md
-- proofs/01_deterministic_governance.md ... proofs/04_observational_noninterference.md
-- related_work/
-- case_study/
-- paper/
-- notes/
+- [assumptions/scope.md](assumptions/scope.md)
+- [assumptions/threat_model.md](assumptions/threat_model.md)
+- [claims/01_claim_1.md](claims/01_claim_1.md) ... [claims/04_claim_4.md](claims/04_claim_4.md)
+- [proofs/01_deterministic_governance.md](proofs/01_deterministic_governance.md) ... [proofs/04_observational_noninterference.md](proofs/04_observational_noninterference.md)
+- [related_work/](related_work/)
+- [case_study/](case_study/)
+- [paper/](paper/)
+- [notes/](notes/)
 
 ## Reading order
 
-1) assumptions → claims → proofs → threat model → case study → related work → paper
+1) assumptions -> claims -> proofs -> threat model -> case study -> related work -> paper
 
 ## Status
 
