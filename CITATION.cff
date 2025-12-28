@@ -1,0 +1,16 @@
+cff-version: 1.2.0
+title: "Deterministic Boundary Layers: Governing Non-Deterministic Execution"
+type: report
+authors:
+  - family-names: Pfister
+    given-names: Lukas
+version: 1.0
+date-released: 2025-12-27
+license: MIT
+repository-code: "https://github.com/lukaspfisterch/dbl-paper"
+abstract: >
+  An architectural model for deterministic, auditable governance of
+  non-deterministic execution. The model separates normativity from execution
+  by construction, expressing all normative effects exclusively as explicit
+  DECISION events in an append-only event stream, enabling replayable and
+  observation-independent governance.
