@@ -1,5 +1,7 @@
 # Deterministic Boundary Layers (DBL)
 
+[![build-paper](https://github.com/lukaspfisterch/dbl-paper/actions/workflows/build-paper.yml/badge.svg)](https://github.com/lukaspfisterch/dbl-paper/actions/workflows/build-paper.yml)
+
 ## What this paper claims
 
 Deterministic Boundary Layers (DBL) define a minimal architectural model for
