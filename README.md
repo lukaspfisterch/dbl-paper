@@ -1,6 +1,7 @@
 # Deterministic Boundary Layers (DBL)
 
 [![build-paper](https://github.com/lukaspfisterch/dbl-paper/actions/workflows/build-paper.yml/badge.svg)](https://github.com/lukaspfisterch/dbl-paper/actions/workflows/build-paper.yml)
+Latest PDF (auto-built): [paper/main.pdf](paper/main.pdf)
 
 ## What this paper claims
 
