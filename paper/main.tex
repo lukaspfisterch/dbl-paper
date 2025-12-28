@@ -8,6 +8,10 @@
 \usepackage{hyperref}
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage{amsthm}
+
+\newtheorem{definition}{Definition}[section]
+\newtheorem{property}{Property}[section]
 
 \geometry{margin=1in}
 \hypersetup{colorlinks=true, linkcolor=black, urlcolor=black, citecolor=black}
@@ -18,8 +22,7 @@
 
 \begin{document}
 % This repository contains the LaTeX sources.
-% A compiled reference PDF is available at:
-% paper/DBL_Paper.pdf
+% Build output is written to: paper/main.pdf
 
 \maketitle
 
@@ -153,3 +156,4 @@ DBL does not address policy quality, execution determinism, or alignment of mode
 \bibliography{refs,../related_work/refs}
 
 \end{document}
+
