@@ -1,6 +1,6 @@
 \section{Model and Axioms}
 
-We present the formal model underlying DBL. The model is minimal: it defines what must be true for the claims to hold, without prescribing implementation details.
+This section presents the formal model underlying DBL. The model is minimal: it defines what must be true for the claims to hold, without prescribing implementation details.
 
 \subsection{Core Elements}
 
@@ -107,14 +107,14 @@ Normative equivalence does not require identical timestamps, EXECUTION outputs, 
 
 \subsection{The Six Axioms}
 
-We state six axioms that define the minimal requirements for deterministic governance.
+Six axioms define the minimal requirements for deterministic governance.
 
 \begin{axiom}[Ontological Scope - A0]
 \label{axiom:a0}
 $V$ constitutes the normative ontology of authorized behavior. $V$ does not claim completeness over pre-normative constraint enforcement (L's rejections), observational data ($O_{obs}$), or physical system events.
 \end{axiom}
 
-\textbf{Rationale:} A0 clarifies what $V$ represents. $V$ is the normative record (what was decided), not a complete causal log (everything that happened). L's rejections occur before $V$ construction and are not normative decisions.
+\textbf{Rationale:} A0 clarifies what $V$ represents. $V$ is the normative record (what was decided), not a complete causal log (everything that happened). Absence of an event in $V$ does not imply absence of execution in the system; it implies only the absence of a normative record. L's rejections occur before $V$ construction and are not normative decisions.
 
 \begin{axiom}[Append-only V - A1]
 \label{axiom:a1}
@@ -135,7 +135,7 @@ All normative effects are represented only by explicit DECISION events in $V$. N
 Governance $G$ consumes only the authoritative input set $I_L$ admitted by boundaries $L$. Observational data $O_{obs}$ is excluded from $\text{dom}(G)$.
 \end{axiom}
 
-\textbf{Rationale:} A3 enforces the separation between authoritative (pre-execution) and observational (post-execution) data. Without A3, execution outputs could influence decisions, violating determinism.
+\textbf{Rationale:} A3 enforces the separation between authoritative (pre-execution) and observational (post-execution) data. A3 constrains normative admissibility of inputs; it does not determine whether an event exists in $V$. Without A3, execution outputs could influence decisions, violating determinism.
 
 \begin{axiom}[Deterministic Governance - A4]
 \label{axiom:a4}
@@ -156,7 +156,7 @@ DECISION events are written to $V$ before any corresponding effector execution. 
 Boundaries $L$ operate before INTENT events are created. $L$ may reject inputs without producing events in $V$. L's rejections are constraint enforcement, not normative decisions.
 \end{axiom}
 
-\textbf{Rationale:} A6 formalizes the pre-ontological nature of $L$. L filters information flow but does not make normative decisions. This allows constraint enforcement (rate limiting, schema validation) without event inflation in $V$.
+\textbf{Rationale:} A6 formalizes the pre-ontological nature of $L$. A6 determines event existence in $V$, while A3 determines normative admissibility of inputs to $G$. L filters information flow but does not make normative decisions. This allows constraint enforcement (rate limiting, schema validation) without event inflation in $V$.
 
 \subsection{Axiom Dependencies}
 
@@ -247,7 +247,7 @@ This flow ensures:
 
 \subsection{Key Properties from the Model}
 
-From the axioms and definitions, we derive immediate properties:
+From the axioms and definitions, immediate properties follow:
 
 \begin{property}[Separation of G and L]
 Governance (G) and Boundaries (L) operate on distinct domains with distinct responsibilities:

@@ -1,6 +1,6 @@
 \section{Related Work}
 
-DBL draws from and extends work in AI safety, formal methods, information flow control, and audit systems. We position DBL relative to five categories of prior work.
+DBL draws from and extends work in AI safety, formal methods, information flow control, and audit systems. DBL is positioned relative to five categories of prior work.
 
 \subsection{AI Safety and Governance}
 
@@ -13,7 +13,7 @@ Guardrail systems~\cite{rebedea2023nemo,inan2023llama} filter prompts and respon
 \paragraph{Red Teaming and Adversarial Testing.}
 Red teaming~\cite{perez2022red,ganguli2022red} probes model behavior with adversarial prompts to discover failure modes. Used for safety evaluation, not runtime governance.
 
-DBL delta: Red teaming is evaluation; DBL is enforcement. Red teaming identifies weaknesses; DBL enforces decisions before execution.
+DBL distinction: Red teaming is evaluation; DBL is enforcement. Red teaming identifies weaknesses; DBL enforces decisions before execution.
 
 \subsection{Formal Methods and Verification}
 
@@ -25,7 +25,7 @@ TLA+ focuses on consensus and distributed correctness; DBL focuses on normative 
 \paragraph{Event Sourcing and CQRS.}
 Event sourcing~\cite{fowler2005event} treats events as the source of truth. Commands produce events; queries read projections. CQRS (Command Query Responsibility Segregation) separates write and read models.
 
-Event sourcing reconstructs state by replaying events and treating all events as state-changing. DBL does not require event sourcing but makes a normative vs observational separation explicit and uses it as a determinism and replay boundary. DBL also enforces pre-execution decisions and G/L separation.
+Event sourcing reconstructs state by replaying events and treating all events as state-changing. DBL does not require event sourcing but separates normative replay from observational recording and uses that separation as the determinism and replay boundary. DBL also enforces pre-execution decisions and G/L separation.
 
 \subsection{Information Flow Control}
 
@@ -56,7 +56,7 @@ Blockchain focuses on consensus and immutability. DBL focuses on normative decis
 \paragraph{Runtime Verification.}
 Runtime verification~\cite{leucker2009brief} monitors executions against formal specifications. Detects violations at runtime.
 
-Runtime verification is reactive and observes execution traces; DBL is proactive and decides before execution. DBL separates normative decisions from observations and enforces deterministic governance.
+Runtime verification is reactive and observes execution traces; DBL is proactive and decides before execution. Observability and monitoring frameworks record traces and metrics but do not define normative decision boundaries. DBL separates normative decisions from observations and enforces deterministic governance.
 
 \subsection{Summary Table}
 

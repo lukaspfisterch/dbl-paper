@@ -1,6 +1,6 @@
 \subsection{Formal Definitions}
 
-We define the core elements of the DBL model. All definitions are normative for the claim set and proofs.
+This section defines the core elements of the DBL model. All definitions are normative for the claim set and proofs.
 
 \begin{definition}[Event Stream V]
 V is an append-only, totally ordered sequence of events. Each event $e \in V$ has a unique index $t(e) \in \mathbb{N}$ representing its position in the stream. Events are immutable once appended.
@@ -114,6 +114,7 @@ Two executions are normatively equivalent if their decision sequences are identi
 
 \begin{definition}[Replay]
 Replay is the process of reconstructing normative state from $V$ starting from initial state $S_0$.
+The initial state $S_0$ is a normative initial state that is deterministic, versioned, and non-observational.
 
 For each event $e \in V$ in order:
 \begin{itemize}
@@ -134,7 +135,7 @@ Therefore: $O_{obs} \not\in \text{dom}(G)$ (observational data is not accessible
 
 \subsection{Key Properties from Definitions}
 
-From these definitions, we derive three immediate properties:
+From these definitions, three immediate properties follow:
 
 \begin{property}[Separation of Concerns]
 Boundaries $L$ and Governance $G$ operate on distinct domains:

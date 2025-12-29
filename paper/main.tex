@@ -27,10 +27,10 @@
 \maketitle
 
 \begin{abstract}
-We introduce Deterministic Boundary Layers (DBL), a minimal architectural model
+This paper introduces Deterministic Boundary Layers (DBL), a minimal architectural model
 for governing non-deterministic systems with deterministic, auditable outcomes.
 DBL separates normativity from execution by construction: all normative effects
-are expressed exclusively as explicit DECISION events recorded in an append-only
+are expressed exclusively as DECISION events recorded in an append-only
 event stream, while execution outputs are treated as observational and non-normative.
 
 Governance decisions are deterministic functions of authoritative inputs admitted
@@ -39,7 +39,7 @@ This separation yields three core guarantees: deterministic governance under
 non-deterministic execution, invariance of governance with respect to boundary
 filtering, and replay equivalence of normative state without re-execution.
 
-We formalize the model, state minimal axioms, and prove four claims establishing
+This paper formalizes the model, states minimal axioms, and proves four claims establishing
 determinism, observational non-interference, and replayability. DBL is not a policy
 framework or learning method, but an architectural pattern for accountable AI
 governance, auditability, and compliance in systems where execution cannot be made
@@ -49,7 +49,7 @@ deterministic.
 \section{Introduction}
 
 \paragraph{Problem Context.}
-Governance in non-deterministic systems requires decisions that are auditable, replayable, and accountable even when execution outcomes vary. When behavior is non-deterministic, it becomes difficult to determine whether a decision was derived from authoritative inputs or influenced by observations. This complicates reconstruction of normative state and weakens the ability to replay decisions as part of an audit record.
+Governance in non-deterministic systems requires decisions that are auditable, replayable, and accountable even when execution outcomes vary. When behavior is non-deterministic, it is difficult to determine whether a decision was derived from authoritative inputs or influenced by observations. This complicates reconstruction of normative state and weakens the ability to replay decisions as part of an audit record.
 
 Non-determinism blurs the boundary between what is decided and what is observed. If execution outputs or timing signals can affect governance, accountability becomes contingent on runtime artifacts rather than explicit decision records. In such settings, replayability and auditability are not guaranteed.
 
@@ -57,7 +57,7 @@ Non-determinism blurs the boundary between what is decided and what is observed.
 A common limitation is the entanglement of normativity with observation. Normative effects are often implicit and influenced by execution outputs or other observational data without explicit representation in a decision record. As a result, decisions are not replayable from authoritative inputs alone and accountability depends on non-replayable traces.
 
 \paragraph{Deterministic Boundary Layers.}
-Deterministic Boundary Layers (DBL) is an architectural model for governing non-deterministic execution. The central rule is that all normativity appears only as explicit DECISION events in an append-only event stream V. Governance (G) is separated from boundaries (L), with L admitting authoritative inputs and G operating only on those inputs.
+Deterministic Boundary Layers (DBL) is an architectural model for governing non-deterministic execution. The central rule is that all normativity appears only as DECISION events in an append-only event stream V. Governance (G) is separated from boundaries (L), with L admitting authoritative inputs and G operating only on those inputs.
 
 Observational data, including execution outputs and other runtime artifacts, is treated as non-normative. Decisions are recorded before execution and are derived only from authoritative inputs, making normative state replayable and auditable without constraining execution outcomes.
 
@@ -79,7 +79,7 @@ The paper introduces the architectural model and its axioms, states the four cla
 
 \section{Proof Sketches}
 
-We summarize the proof ideas for the four claims under assumptions A1--A5 (and A6 where stated). Full lemma-based proofs are provided in the supplementary proof files referenced in each claim proof.
+This section summarizes the proof ideas for the four claims under assumptions A1--A5 (and A6 where stated). Full lemma-based proofs are provided in the supplementary proof files referenced in each claim proof.
 
 \paragraph{Claim 1: Deterministic Governance under Non-Deterministic Execution.}
 Fix the boundary configuration $C$, the admitted authoritative input set $I_L$, and the policy version $p_v$. By A3, governance consumes only $I_L$ (excluding observational data). By A4, $G(I_L,p_v)$ is a deterministic, pure mapping to a DECISION event. By A5, the DECISION is written to $V$ before any effector execution, so non-deterministic execution outputs cannot causally influence the decision. By A1 and A2, the resulting DECISION events in $V$ are immutable and constitute the entire normative effect. Therefore identical $(I_L,C,p_v)$ yields the same ordered DECISION sequence, independent of effector behavior.
@@ -88,14 +88,14 @@ Fix the boundary configuration $C$, the admitted authoritative input set $I_L$, 
 Boundaries $L$ determine what is admissible as authoritative input and shape it into $I_L$, while governance $G$ decides only over $I_L$. By A3, observational data $O_{obs}$ is excluded from $\mathrm{dom}(G)$, so governance cannot be influenced by execution traces, outputs, timing, or metrics. By A6, $L$ operates pre-ontologically and may reject inputs before any INTENT is created, which enforces constraints without creating normativity. By A4, for fixed $(I_L,p_v)$ the governance output is invariant. Hence the normative outcome depends only on admitted authoritative inputs and policy versioning, not on observation, execution, or boundary-external artifacts.
 
 \paragraph{Claim 3: Replay Equivalence of Normative State.}
-Replay processes the same immutable stream $V$ (A1) from the same initial normative state $S_0$. By A2, only DECISION events are normative, so the normative projection depends only on the ordered subsequence $V_{norm}$. By A5, DECISION events precede execution and therefore do not encode execution-dependent variation. By A4, each DECISION is the deterministic result of its recorded authoritative inputs under a fixed policy version. Consequently, replaying $V$ yields the same DECISION sequence and the same induced normative state sequence as the original execution, independent of effector outputs, timing, infrastructure, or side observations.
+Replay processes the same immutable stream $V$ (A1) from the same initial normative state $S_0$, where $S_0$ is deterministic, versioned, and non-observational. By A2, only DECISION events are normative, so the normative projection depends only on the ordered subsequence $V_{norm}$. By A5, DECISION events precede execution and therefore do not encode execution-dependent variation. By A4, each DECISION is the deterministic result of its recorded authoritative inputs under a fixed policy version. Consequently, replaying $V$ yields the same DECISION sequence and the same induced normative state sequence as the original execution, independent of effector outputs, timing, infrastructure, or side observations.
 
 \paragraph{Claim 4: Observational Non-Interference.}
 Let $O_{obs}$ denote execution-dependent artifacts (outputs, traces, errors, timing, metrics). By A3, governance consumes only $I_L$, so $O_{obs} \notin \mathrm{dom}(G)$. By A4, decisions are a deterministic function of $(I_L,p_v)$ alone. By A5, DECISION events occur before execution, eliminating causal feedback from $O_{obs}$ to decisions within a run. Therefore observational data cannot directly or indirectly influence normative decisions unless it is explicitly admitted as authoritative input through a boundary change, in which case the model has been updated and must be versioned and audited accordingly.
 
 \section{Case Study}
 
-We illustrate DBL using a minimal prompt-injection scenario to demonstrate pre-execution governance, separation of normativity, and replayability.
+This section illustrates DBL using a minimal prompt-injection scenario to demonstrate pre-execution governance, separation of normativity, and replayability.
 
 \paragraph{Scenario.}
 A system exposes an LLM-backed assistant. An external user submits a request that includes a hidden instruction attempting to override system policy (for example, instructing the model to ignore prior constraints). Such behavior is representative of prompt-injection attacks and is inherently non-deterministic in outcome due to model sampling and execution variability.
@@ -146,9 +146,9 @@ DBL is not an LLM safety or alignment technique. It does not modify model behavi
 
 \section{Conclusion}
 
-This paper introduced Deterministic Boundary Layers (DBL), an architectural model for governing non-deterministic systems with deterministic, auditable decisions. DBL separates normative decisions from observational execution by construction: governance produces explicit DECISION events from authoritative inputs, while execution outputs are treated as non-normative observations.
+This paper introduced Deterministic Boundary Layers (DBL), an architectural model for governing non-deterministic systems with deterministic, auditable decisions. DBL separates normative decisions from observational execution by construction: governance produces DECISION events from authoritative inputs, while execution outputs are treated as non-normative observations.
 
-We formalized DBL through a minimal set of axioms and showed that, under these assumptions, four properties follow: deterministic governance, invariance of G/L separation, replay equivalence of normative state, and observational non-interference. Together, these properties ensure that normative outcomes are independent of non-deterministic execution behavior and can be reconstructed and audited from an append-only event stream.
+This paper formalized DBL through a minimal set of axioms and showed that, under these assumptions, four properties follow: deterministic governance, invariance of G/L separation, replay equivalence of normative state, and observational non-interference. Together, these properties ensure that normative outcomes are independent of non-deterministic execution behavior and can be reconstructed and audited from an append-only event stream.
 
 DBL does not address policy quality, execution determinism, or alignment of model behavior. Its contribution lies in making decisions explicit, deterministic, and replayable, thereby enabling accountability for systems that operate over inherently non-deterministic components.
 

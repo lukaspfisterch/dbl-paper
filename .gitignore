@@ -1,0 +1,18 @@
+# LaTeX
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.run.xml
+*.synctex.gz
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Repo-specific
+INVENTORY.md
