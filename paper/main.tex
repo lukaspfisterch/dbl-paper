@@ -79,7 +79,7 @@ The paper introduces the architectural model and its axioms, states the four cla
 
 \section{Proof Sketches}
 
-This section summarizes the proof ideas for the four claims under assumptions A1--A5 (and A6 where stated). Full lemma-based proofs are provided in the supplementary proof files referenced in each claim proof.
+The axioms are intentionally constructed such that the claims follow by construction. The contribution is the explicit identification and formalization of these architectural constraints, not the derivation of unexpected consequences. This section summarizes the proof ideas under assumptions A1--A5 (and A6 where stated). Full lemma-based proofs are provided in the supplementary proof files.
 
 \paragraph{Claim 1: Deterministic Governance under Non-Deterministic Execution.}
 Fix the boundary configuration $C$, the admitted authoritative input set $I_L$, and the policy version $p_v$. By A3, governance consumes only $I_L$ (excluding observational data). By A4, $G(I_L,p_v)$ is a deterministic, pure mapping to a DECISION event. By A5, the DECISION is written to $V$ before any effector execution, so non-deterministic execution outputs cannot causally influence the decision. By A1 and A2, the resulting DECISION events in $V$ are immutable and constitute the entire normative effect. Therefore identical $(I_L,C,p_v)$ yields the same ordered DECISION sequence, independent of effector behavior.
