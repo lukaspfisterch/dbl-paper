@@ -70,7 +70,7 @@ Observational data, including execution outputs and other runtime artifacts, is 
 \end{itemize}
 
 \paragraph{Paper Organization.}
-The paper introduces the architectural model and its axioms, states the four claims, provides proof sketches under fixed assumptions, and presents a single case study, followed by a related work mapping.
+The paper introduces the architectural model and its axioms, states the four claims, provides proof sketches under fixed assumptions, and presents two case studies from distinct domains, followed by a related work mapping.
 
 \input{sections/formal_definitions}
 \input{sections/model_and_axioms}
@@ -93,11 +93,12 @@ Replay processes the same immutable stream $V$ (A1) from the same initial normat
 \paragraph{Claim 4: Observational Non-Interference.}
 Let $O_{obs}$ denote execution-dependent artifacts (outputs, traces, errors, timing, metrics). By A3, governance consumes only $I_L$, so $O_{obs} \notin \mathrm{dom}(G)$. By A4, decisions are a deterministic function of $(I_L,p_v)$ alone. By A5, DECISION events occur before execution, eliminating causal feedback from $O_{obs}$ to decisions within a run. Therefore observational data cannot directly or indirectly influence normative decisions unless it is explicitly admitted as authoritative input through a boundary change, in which case the model has been updated and must be versioned and audited accordingly.
 
-\section{Case Study}
+\section{Case Studies}
 
-This section illustrates DBL using a minimal prompt-injection scenario to demonstrate pre-execution governance, separation of normativity, and replayability.
+This section illustrates DBL in two distinct domains to demonstrate that the architectural pattern is domain-independent. Both cases follow the same structure: boundary admission, governance decision, execution, and replay.
 
-\paragraph{Scenario.}
+\subsection{LLM Prompt Governance}
+
 A system exposes an LLM-backed assistant. An external user submits a request that includes a hidden instruction attempting to override system policy (for example, instructing the model to ignore prior constraints). Such behavior is representative of prompt-injection attacks and is inherently non-deterministic in outcome due to model sampling and execution variability.
 
 \paragraph{Boundary Admission.}
@@ -112,7 +113,24 @@ Only if the DECISION is ALLOW does the effector execute the model. The resulting
 \paragraph{Replay and Audit.}
 An auditor replaying $V$ observes the same ordered DECISION sequence regardless of the original model outputs or infrastructure conditions. The normative outcome is fully reconstructible from $(V, I_L, C, p_v)$ without access to the model, prompts, or execution environment.
 
-This case study demonstrates how DBL enforces deterministic governance over non-deterministic execution while preserving auditability and replay equivalence.
+\subsection{Financial Transaction}
+
+A payment system processes transfer requests between accounts. Execution depends on external settlement infrastructure (banking APIs, network latency, partial failures) and is inherently non-deterministic. Regulatory requirements demand that every approval or denial is auditable and reconstructible independently of settlement outcomes.
+
+\paragraph{Boundary Admission.}
+The boundary layer $L$ receives a raw transfer request and extracts authoritative inputs: sender, recipient, amount, currency, and account status flags. Observational data such as current network latency, settlement queue depth, or previous transaction timing is excluded from $I_L$. If the request fails structural validation (for example, malformed account identifiers), it is rejected pre-ontologically.
+
+\paragraph{Governance Decision.}
+Governance evaluates $I_L$ under policy version $p_v$, which encodes transfer limits, compliance rules, and account restrictions. A DECISION event (APPROVE or DENY) is produced deterministically and appended to $V$ before any settlement is initiated. The decision depends only on $(I_L, p_v)$, not on whether the settlement infrastructure is available or how long previous transfers took.
+
+\paragraph{Execution and Observation.}
+Only if the DECISION is APPROVE does the effector initiate settlement via external banking infrastructure. The settlement result (success, timeout, partial failure), confirmation codes, and processing timestamps are recorded as EXECUTION and PROOF events. These are observational artifacts with no influence on the prior DECISION.
+
+\paragraph{Replay and Audit.}
+A compliance auditor replaying $V$ reconstructs the same DECISION sequence from $(V, I_L, C, p_v)$ without access to the settlement infrastructure, banking APIs, or original network conditions. Whether the original settlement succeeded or failed is irrelevant to the normative record.
+
+\medskip
+Both cases demonstrate the same structural property: governance decisions are deterministic, recorded before execution, and replayable from authoritative inputs alone. The domain-specific details differ; the architectural guarantees do not.
 
 \section{Non-Goals}
 
@@ -150,7 +168,7 @@ This paper introduced Deterministic Boundary Layers (DBL), an architectural mode
 
 This paper formalized DBL through a minimal set of axioms and showed that, under these assumptions, four properties follow: deterministic governance, invariance of G/L separation, replay equivalence of normative state, and observational non-interference. Together, these properties ensure that normative outcomes are independent of non-deterministic execution behavior and can be reconstructed and audited from an append-only event stream.
 
-DBL does not address policy quality, execution determinism, or alignment of model behavior. Its contribution lies in making decisions explicit, deterministic, and replayable, thereby enabling accountability for systems that operate over inherently non-deterministic components.
+Two case studies from distinct domains---LLM prompt governance and financial transaction processing---demonstrate that the architectural guarantees are domain-independent. DBL does not address policy quality, execution determinism, or alignment of model behavior. Its contribution lies in making decisions explicit, deterministic, and replayable, thereby enabling accountability for systems that operate over inherently non-deterministic components.
 
 \bibliographystyle{plain}
 \bibliography{refs,../related_work/refs}
