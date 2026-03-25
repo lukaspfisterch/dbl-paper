@@ -1,6 +1,6 @@
 # Proof — Replay Equivalence of Normative State
 
-## Theorem
+## Proposition
 
 A replay of V starting from the same initial state S0 yields the same sequence of normative states and DECISION events as the original execution.
 
@@ -16,19 +16,4 @@ A replay of V starting from the same initial state S0 yields the same sequence o
 
 By A1, V is append-only and immutable, so the replay uses the same ordered events. By A2, normative effects are fully represented by DECISION events in V. By A5, those DECISION events occur before execution and are not influenced by execution outputs. By A4, the DECISION outcomes are deterministic for the recorded inputs and policy configuration. Therefore, replaying V yields the same DECISION sequence and the same normative state sequence as the original execution.
 
-## Failure Modes
-
-- If A1 fails, replay can diverge due to mutation or reordering of V.
-- If A2 fails, normativity may be missing from V and cannot be replayed.
-- If A5 fails, execution can influence decisions and replay equivalence breaks.
-- If A4 fails, governance outcomes may differ across replays.
-
-## Non-Goals
-
-- No claim about replay of execution outputs.
-- No claim about reproducing external side effects.
-- No claim about completeness of observations.
-
-## Extended Proof
-
-A fully expanded, lemma-based proof is provided for reviewer inspection and formal verification. See: [proof_03_replay_equivalence_lemmas.md](./proof_03_replay_equivalence_lemmas.md)
+The supplementary lemma chain is provided in [proof_03_replay_equivalence_lemmas.md](./proof_03_replay_equivalence_lemmas.md).

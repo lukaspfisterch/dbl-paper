@@ -8,7 +8,7 @@ DBL draws from and extends work in AI safety, formal methods, information flow c
 Constitutional AI~\cite{bai2022constitutional} and RLHF~\cite{ouyang2022training} align model behavior via iterative optimization over outputs and preference signals. This couples governance with execution outcomes and yields policies that are not replay-deterministic across training runs. DBL instead externalizes normativity as explicit, pre-execution DECISION events and treats outputs as observational.
 
 \paragraph{Guardrails and Prompt Filtering.}
-Guardrail systems~\cite{rebedea2023nemo,inan2023llama} filter prompts and responses against safety policies, typically as pre-processing or post-processing layers. Some guardrails may adapt using observed violations, and logging is frequently incomplete. DBL requires explicit DECISION events before execution and enforces observational non-interference.
+Guardrail systems~\cite{rebedea2023nemo,inan2023llama} filter prompts and responses against safety policies, typically as pre-processing or post-processing layers. Some guardrails may adapt using observed violations, and logging is frequently incomplete. DBL differs at the architectural level: it requires explicit DECISION events before execution, separates governance from execution, and treats execution outputs as observational rather than as governance inputs.
 
 \paragraph{Red Teaming and Adversarial Testing.}
 Red teaming~\cite{perez2022red,ganguli2022red} probes model behavior with adversarial prompts to discover failure modes. Used for safety evaluation, not runtime governance.
@@ -25,7 +25,7 @@ TLA+ focuses on consensus and distributed correctness; DBL focuses on normative 
 \paragraph{Event Sourcing and CQRS.}
 Event sourcing~\cite{fowler2005event} treats events as the source of truth. Commands produce events; queries read projections. CQRS~\cite{young2010cqrs} separates write and read models and formalizes event-driven architectures where state is reconstructed by replaying an ordered event log.
 
-DBL shares the append-only event stream as the source of truth but introduces a separation that event sourcing does not require: normative events (DECISION) are distinguished from observational events (EXECUTION, PROOF), and only the normative projection determines governance state. Event sourcing replays all events equivalently; DBL replays only the normative subset and treats the rest as non-authoritative. DBL also enforces pre-execution decisions and G/L separation.
+DBL shares the append-only event stream as the source of truth but introduces a separation that event sourcing does not require: normative events (DECISION) are distinguished from observational events (EXECUTION, PROOF), and only the normative projection determines governance state. Event sourcing records what happened. DBL records what was authorized to happen, independently of what subsequently occurred. Event sourcing replays all events equivalently; DBL replays only the normative subset and treats the rest as non-authoritative. DBL also enforces pre-execution decisions and G/L separation.
 
 \subsection{Information Flow Control}
 
@@ -37,7 +37,7 @@ DIFC controls data flows for confidentiality and integrity; DBL controls normati
 \paragraph{Reference Monitors.}
 Reference monitors~\cite{anderson1972reference} mediate access to resources. Enforce security policies at runtime.
 
-Reference monitors enforce access control during execution. DBL decides before execution and excludes observational context from decisions, which yields deterministic governance and replayable normativity.
+Reference monitors enforce access control during execution. DBL externalizes these decisions into explicit, replayable DECISION events recorded before execution. This makes governance itself inspectable and reconstructible, rather than only its runtime enforcement effects.
 
 \subsection{Policy Languages and Access Control}
 
@@ -105,7 +105,7 @@ Verification & violations & traces & verification & Non-interference \\
 DBL is not a replacement for these approaches but an architectural foundation that can compose with them:
 
 \begin{itemize}
-  \item \textbf{Constitutional AI / RLHF:} DBL can record policy decisions before invoking constitutionally-aligned models. The model is the effector; DBL governs its invocation.
+  \item \textbf{Constitutional AI / RLHF:} DBL can record policy decisions before invoking constitutionally aligned models. The model is the effector; DBL governs its invocation.
   
   \item \textbf{Guardrails:} Guardrail rules can be implemented in DBL's boundary layer (L) or governance layer (G). DBL makes their decisions explicit and replayable.
   
@@ -117,6 +117,8 @@ DBL is not a replacement for these approaches but an architectural foundation th
 \end{itemize}
 
 The contribution is an architectural separation that makes normativity explicit, deterministic, and replayable even when execution is non-deterministic.
+
+Viewed relative to the companion execution theory, DBL is a governance layer on top of a narrower execution substrate. The execution theory isolates ordered events, replay, and observation-free projection. DBL adds the additional constraints required for normative systems: authoritative admission, explicit DECISION events, pre-execution governance, and pre-ontological rejection.
 
 \subsection{Limitations and Future Work}
 

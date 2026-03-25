@@ -2,13 +2,14 @@
 
 This document defines the scope for the claim set and labels the minimal assumptions used by the proofs. It is normative for what the claims do and do not cover.
 
-## Assumptions (A1–A5)
+## Assumptions (A1–A6)
 
 - **A1 (Append-only V):** The event stream V is append-only and events are immutable once written.
 - **A2 (DECISION primacy):** All normative effects are represented only by explicit DECISION events in V.
 - **A3 (Authoritative inputs):** Governance consumes only the authoritative input set I_L admitted by L; observational data is excluded.
 - **A4 (Deterministic governance):** For fixed authoritative inputs and fixed policy configuration, governance G deterministically produces DECISION events.
 - **A5 (Pre-execution decision):** DECISION events are written before any corresponding execution.
+- **A6 (Pre-ontological boundaries):** All inputs to governance pass through L, which defines admissibility before INTENT creation and may reject inputs without creating events in V.
 
 ## Out of Scope
 

@@ -25,7 +25,10 @@ The result is a system in which:
 - replay does not require re-execution,
 - and execution outcomes cannot retroactively legitimize decisions.
 
-This work builds on the execution model defined in https://github.com/lukaspfisterch/execution-without-normativity
+This work builds on the companion execution theory defined in
+[`execution-without-normativity`](https://github.com/lukaspfisterch/execution-without-normativity).
+That companion paper isolates the execution substrate; DBL adds the governance
+constraints required for explicit, replayable normativity.
 
 ---
 
@@ -120,7 +123,11 @@ This order mirrors the logical dependency structure of the argument.
 - Claim set: **frozen**
 - Proof sketches: **complete**
 - Expanded proofs: **linked where needed**
-- Paper draft: **in progress**
+- Paper draft: **arXiv preprint ready**
+
+Submission guidance:
+
+- [`docs/ARXIV_SUBMISSION.md`](docs/ARXIV_SUBMISSION.md)
 
 ---
 

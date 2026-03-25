@@ -4,7 +4,7 @@
 The model defines a deterministic governance layer over non-deterministic execution. Normativity is separated from observation by construction: decisions are explicit and recorded, while execution outputs are treated as observational.
 
 \paragraph{Core Elements.}
-\textbf{$\\Delta$ (Delta).} $\\Delta$ denotes an atomic event or action. It is the minimal unit of change represented in the model. $\\Delta$ may be normative or observational depending on its event type.  
+\textbf{$\\Delta$ (Delta).} $\\Delta$ denotes an atomic event or action. It is the minimal unit of change represented in the model. $\\Delta$ may be contextual, normative, or observational depending on its event type.  
 \textbf{V.} V is an append-only event stream composed of ordered $\\Delta$ events. V is authoritative for normativity within the model.  
 \textbf{t.} t denotes logical order derived from V. It is defined by the sequence of events in V rather than by wall-clock time. $t(e)$ is treated as logical time derived from sequence order, not wall-clock time.  
 \textbf{G.} G is the governance function that produces explicit DECISION events. G operates only on authoritative inputs admitted by L and a fixed policy version $p_v$.  
@@ -20,6 +20,7 @@ Normative effects determine whether actions are allowed or denied. In this model
   \item \textbf{A3 (Authoritative inputs):} Governance consumes only the authoritative input set I\_L admitted by L; observational data is excluded.
   \item \textbf{A4 (Deterministic governance):} For fixed authoritative inputs and fixed policy configuration, governance G deterministically produces DECISION events.
   \item \textbf{A5 (Pre-execution decision):} DECISION events are written before any corresponding execution.
+  \item \textbf{A6 (Pre-ontological boundaries):} L operates before INTENT creation and may reject inputs without creating events in V.
 \end{itemize}
 
 \paragraph{Interpretation Notes.}

@@ -35,15 +35,15 @@ event stream, while execution outputs are treated as observational and non-norma
 
 Governance decisions are deterministic functions of authoritative inputs admitted
 by a boundary layer, independent of execution behavior, timing, or infrastructure.
-This separation yields three core guarantees: deterministic governance under
-non-deterministic execution, invariance of governance with respect to boundary
-filtering, and replay equivalence of normative state without re-execution.
+This separation yields four structural consequences: deterministic governance under
+non-deterministic execution, invariance of G/L separation, replay equivalence of
+normative state without re-execution, and observational non-interference.
 
-This paper formalizes the model, states minimal axioms, and proves four claims establishing
-determinism, observational non-interference, and replayability. DBL is not a policy
-framework or learning method, but an architectural pattern for accountable AI
-governance, auditability, and compliance in systems where execution cannot be made
-deterministic.
+This paper formalizes the model, states minimal axioms, and makes four claims
+explicit whose proof sketches follow directly from those axioms. DBL is not a
+policy framework or learning method, but an architectural pattern for accountable
+AI governance, auditability, and compliance in systems where execution cannot be
+made deterministic.
 \end{abstract}
 
 \section{Introduction}
@@ -60,6 +60,12 @@ A common limitation is the entanglement of normativity with observation. Normati
 Deterministic Boundary Layers (DBL) is an architectural model for governing non-deterministic execution. The central rule is that all normativity appears only as DECISION events in an append-only event stream V. Governance (G) is separated from boundaries (L), with L admitting authoritative inputs and G operating only on those inputs.
 
 Observational data, including execution outputs and other runtime artifacts, is treated as non-normative. Decisions are recorded before execution and are derived only from authoritative inputs, making normative state replayable and auditable without constraining execution outcomes.
+
+\paragraph{Contribution Statement.}
+The contribution of this paper is not the derivation of complex properties from a rich dynamics. It is the identification of the minimal structural conditions under which deterministic governance, replay equivalence, and observational non-interference become unavoidable. The axioms are intentionally chosen so that these properties follow by construction. This is the point of the model: if a system satisfies these constraints, then the core guarantees are no longer optional design goals but structural consequences.
+
+\paragraph{Relation to the Companion Execution Theory.}
+This paper is layered above the companion theory \emph{Execution Without Normativity}, which isolates the execution substrate from meaning and governance. That companion paper uses its own axiom labels for execution structure only. The DBL axioms A1--A6 used here are local to the present paper and characterize the additional governance constraints required to make normativity explicit, deterministic, and replayable.
 
 \paragraph{Contributions.}
 \begin{itemize}
@@ -79,7 +85,7 @@ The paper introduces the architectural model and its axioms, states the four cla
 
 \section{Proof Sketches}
 
-The axioms are intentionally constructed such that the claims follow by construction. The contribution is the explicit identification and formalization of these architectural constraints, not the derivation of unexpected consequences. This section summarizes the proof ideas under assumptions A1--A5 (and A6 where stated). Full lemma-based proofs are provided in the supplementary proof files.
+The axioms are intentionally constructed such that the claims follow by construction. The contribution is the explicit identification and formalization of these architectural constraints, not the derivation of unexpected consequences. The proofs are therefore intentionally minimal: they do not display ingenuity of derivation, but structural inevitability once A1--A6 are fixed. This section summarizes the proof ideas under assumptions A1--A6. Full lemma-based proofs are provided in the supplementary proof files.
 
 \paragraph{Claim 1: Deterministic Governance under Non-Deterministic Execution.}
 Fix the boundary configuration $C$, the admitted authoritative input set $I_L$, and the policy version $p_v$. By A3, governance consumes only $I_L$ (excluding observational data). By A4, $G(I_L,p_v)$ is a deterministic, pure mapping to a DECISION event. By A5, the DECISION is written to $V$ before any effector execution, so non-deterministic execution outputs cannot causally influence the decision. By A1 and A2, the resulting DECISION events in $V$ are immutable and constitute the entire normative effect. Therefore identical $(I_L,C,p_v)$ yields the same ordered DECISION sequence, independent of effector behavior.
@@ -156,6 +162,8 @@ Cross-tenant governance, federated decision-making, and multi-domain coordinatio
 
 These non-goals are deliberate. DBL focuses exclusively on deterministic governance, explicit normativity, and replayable audit under non-deterministic execution.
 
+This restriction is significant in fully distributed settings, but it still leaves a substantial practical scope. Many compliance-critical systems already enforce or approximate a single authoritative decision record, including financial ledgers, workflow engines, and audit logs. DBL is aimed at that class of systems: environments where a canonical order of governance decisions is already required, even if the underlying execution remains non-deterministic.
+
 \section{Positioning with Respect to LLM Safety}
 
 DBL is not an LLM safety or alignment technique. It does not modify model behavior, training, or outputs. Instead, DBL provides an architectural governance layer that deterministically decides whether execution is permitted, independent of how the underlying model behaves. Safety mechanisms may be implemented as policies within DBL, but DBL itself addresses accountability and auditability, not behavioral alignment.
@@ -166,12 +174,11 @@ DBL is not an LLM safety or alignment technique. It does not modify model behavi
 
 This paper introduced Deterministic Boundary Layers (DBL), an architectural model for governing non-deterministic systems with deterministic, auditable decisions. DBL separates normative decisions from observational execution by construction: governance produces DECISION events from authoritative inputs, while execution outputs are treated as non-normative observations.
 
-This paper formalized DBL through a minimal set of axioms and showed that, under these assumptions, four properties follow: deterministic governance, invariance of G/L separation, replay equivalence of normative state, and observational non-interference. Together, these properties ensure that normative outcomes are independent of non-deterministic execution behavior and can be reconstructed and audited from an append-only event stream.
+This paper formalized DBL through a minimal set of axioms and made explicit that, under these assumptions, four properties follow directly: deterministic governance, invariance of G/L separation, replay equivalence of normative state, and observational non-interference. Together, these properties ensure that normative outcomes are independent of non-deterministic execution behavior and can be reconstructed and audited from an append-only event stream.
 
 Two case studies from distinct domains---LLM prompt governance and financial transaction processing---demonstrate that the architectural guarantees are domain-independent. DBL does not address policy quality, execution determinism, or alignment of model behavior. Its contribution lies in making decisions explicit, deterministic, and replayable, thereby enabling accountability for systems that operate over inherently non-deterministic components.
 
 \bibliographystyle{plain}
-\bibliography{refs,../related_work/refs}
+\bibliography{refs}
 
 \end{document}
-
