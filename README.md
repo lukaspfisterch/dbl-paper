@@ -123,11 +123,7 @@ This order mirrors the logical dependency structure of the argument.
 - Claim set: **frozen**
 - Proof sketches: **complete**
 - Expanded proofs: **linked where needed**
-- Paper draft: **arXiv preprint ready**
-
-Submission guidance:
-
-- [`docs/ARXIV_SUBMISSION.md`](docs/ARXIV_SUBMISSION.md)
+- Paper draft: **ready**
 
 ---
 
