@@ -1,5 +1,7 @@
 # Deterministic Boundary Layers (DBL)
 
+[![DBL DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19600832.svg)](https://doi.org/10.5281/zenodo.19600832)
+[![Execution Without Normativity DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19600773.svg)](https://doi.org/10.5281/zenodo.19600773)
 [![build-paper](https://github.com/lukaspfisterch/dbl-paper/actions/workflows/build-paper.yml/badge.svg)](https://github.com/lukaspfisterch/dbl-paper/actions/workflows/build-paper.yml)
 Latest PDF (auto-built): [paper/main.pdf](paper/main.pdf)
 
